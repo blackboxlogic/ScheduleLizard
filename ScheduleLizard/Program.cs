@@ -8,10 +8,9 @@ namespace ScheduleLizard
 {
 	class Program
 	{
-		// course output single file with page break ordered by teacher/period
 		const string OutputPath = "Output";
 		const int RandomSeed = 100;
-		const int MSWordPageLines = 54;
+		const char MSWordPageBreak = '\f';
 
 		static void Main(string[] args)
 		{
@@ -165,7 +164,7 @@ namespace ScheduleLizard
 
 		static void Output(Course[] courses)
 		{
-			var content = string.Join("\n", courses.OrderBy(c => c.Teacher).ThenBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} ({c.Teacher} @ {c.Room})\n------------\n{string.Join('\n', c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i}. {s.Name}"))}{new string('\n', Math.Max(0, MSWordPageLines - c.Students.Count - 2))}"));
+			var content = string.Join("\n", courses.OrderBy(c => c.Teacher).ThenBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} ({c.Teacher} @ {c.Room})\n------------\n{string.Join('\n', c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i}. {s.Name}"))}\n{MSWordPageBreak}"));
 			var path = Path.Combine(OutputPath, $"ByClassPrintable.txt");
 			File.WriteAllText(path, content);
 
