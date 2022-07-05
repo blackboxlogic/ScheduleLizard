@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduleLizard", "ScheduleLizard\ScheduleLizard.csproj", "{979F9D5E-3904-4C57-A072-761597E971EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{979F9D5E-3904-4C57-A072-761597E971EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{979F9D5E-3904-4C57-A072-761597E971EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{979F9D5E-3904-4C57-A072-761597E971EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{979F9D5E-3904-4C57-A072-761597E971EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C3A85429-8771-493C-B49E-31D866C32056}
+	EndGlobalSection
+EndGlobal
