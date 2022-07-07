@@ -1,32 +1,36 @@
 Name,Capacity,Period,Teacher,Room
 Programming,17,1,Alex,C-Lab
 Programming,17,2,Alex,C-Lab
-Programming,17,3,Alex,C-Lab
+Parts & Pieces,16,3,Alex,Maker Space
+Parts & Pieces,16,4,Alex,Maker Space
 3D Printing,15,1,Chris,3D-Lab
 3D Printing,15,2,Chris,3D-Lab
-LEGO Robotics,12,1,Laurie Spooner,Maker Space
-LEGO Robotics,12,2,Laurie Spooner,Maker Space
-LEGO Robotics,12,3,Laurie Spooner,Maker Space
-Calc in Motion,100,1,Mia,Cardboard Room
-Calc in Motion,100,2,Mia,Cardboard Room
-Business of Innovation,100,1,Andy,Casa Whitman
-Business of Innovation,100,2,Andy,Casa Whitman
-Chess,20,1,Marc,Chess-Lab
-Chess,20,2,Marc,Chess-Lab
-Cube,100,1,Chandler,Cube-Vex-Lab
-Cube,100,2,Chandler,Cube-Vex-Lab
-Cube,100,3,Chandler,Cube-Vex-Lab
-Parts & Pieces,16,4,Alex,Maker Space
 Drones,15,3,Chris,3D-Lab
 Drones,15,4,Chris,3D-Lab
-Boat,16,3,Mia,Cardboard Room
-Boat,16,4,Mia,Cardboard Room
-Cool Math Games,100,3,Aurora,Chess-Lab
-Cool Math Games,100,4,Aurora,Chess-Lab
-//Rockets,12,3,Ryan,Rocket-Lab
-Rockets,12,3,Ryan,Rocket-Lab
-Rockets,12,4,Ryan,Rocket-Lab
-Forest,16,4,Laurie Spooner,Forest-Lab
+LEGO Robotics,12,1,Laurie Spooner,Maker Space
+LEGO Robotics,12,2,Laurie Spooner,Maker Space
+How Healthy is your Forest?,16,3,Laurie Spooner,Forest-Lab
+How Healthy is your Forest?,16,4,Laurie Spooner,Forest-Lab
+Calc in Motion,100,1,Mia,Cardboard Room
+Calc in Motion,100,2,Mia,Cardboard Room
+Whatever Floats your Boat,16,3,Mia,Cardboard Room
+Whatever Floats your Boat,16,4,Mia,Cardboard Room
+Business of Innovation,100,1,Andy,Casa Whitman
+Business of Innovation,100,2,Andy,Casa Whitman
 ROV,16,3,Andy,Casa Whitman
 ROV,16,4,Andy,Casa Whitman
+Chess,20,1,Marc,Chess-Lab
+Chess,20,2,Marc,Chess-Lab
+Cool Math Games,100,3,Aurora,Chess-Lab
+Cool Math Games,100,4,Aurora,Chess-Lab
+You can do the Cube,100,1,Chandler,Cube-Vex-Lab
+You can do the Cube,100,2,Chandler,Cube-Vex-Lab
+//You can do the Cube,100,3,Chandler,Cube-Vex-Lab
+//VEX,12,3,Chandler,Cube-Vex-Lab
 VEX,12,4,Chandler,Cube-Vex-Lab
+// Rockets could be period 3 or 4
+Rockets,12,3,Ryan,B101
+Science Behind Art,12,1,Taylor,Home-Ec
+Science Behind Art,12,2,Taylor,Home-Ec
+Pseudo-Science,12,3,Taylor,Home-Ec
+Pseudo-Science,12,4,Taylor,Home-Ec

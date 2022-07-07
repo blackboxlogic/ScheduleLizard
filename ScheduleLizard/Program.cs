@@ -69,7 +69,7 @@ namespace ScheduleLizard
 				var preferences = studentLine
 					.Skip(2) // date and name
 					.Select(rank =>
-						rank == "NO" ? 999 :
+						rank == "NO" || rank == "0" ? 999 :
 						rank == "" ? 50 :
 						int.Parse(rank))
 					.Zip(courses, (p, c) => new { p, c })
