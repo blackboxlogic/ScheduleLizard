@@ -153,24 +153,26 @@ namespace ScheduleLizard
 		static void Output(Student[] students)
 		{
 			// name,p1,p2,p3,p4
-			var content = string.Join("\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name},{string.Join(",", s.ClassSchedule.OrderBy(c => c.Period).Select(c => c.Name))}"));
+			var content = string.Join("\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name},{string.Join(",", s.ClassSchedule.OrderBy(c => c.Period).Select(c => c.Name))}"));
 			var path = Path.Combine(OutputPath, $"ByStudent.csv");
 			File.WriteAllText(path, content);
 
-			content = string.Join("\n\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name}\n{new string('-', s.Name.Length)}\n{string.Join('\n', s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name}"))}"));
+			content = string.Join("\r\n\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name}\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name}"))}"));
 			path = Path.Combine(OutputPath, $"ByStudentPrintable.txt");
 			File.WriteAllText(path, content);
 		}
 
 		static void Output(Course[] courses)
 		{
-			var content = string.Join("\n", courses.OrderBy(c => c.Teacher).ThenBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} ({c.Teacher} @ {c.Room})\n------------\n{string.Join('\n', c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i}. {s.Name}"))}\n{MSWordPageBreak}"));
+			var content = string.Join("\r\n" + MSWordPageBreak,
+				courses.GroupBy(c => c.Teacher)
+					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Room})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
 			var path = Path.Combine(OutputPath, $"ByClassPrintable.txt");
 			File.WriteAllText(path, content);
 
 			var pad = courses.Max(c => $"p{c.Period} {c.Name}".Length + 2);
-			content = string.Join("\n", courses.OrderBy(c => c.Teacher).ThenBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} ({c.Teacher} in {c.Room})"));
-			content = $"{courses.SelectMany(c => c.Students).Distinct().Count()} students across {courses.Count()} class periods.\n{content}";
+			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Room}"))));
+			content = $"{courses.SelectMany(c => c.Students).Distinct().Count()} students across {courses.Count()} class periods.\r\n{content}";
 			path = Path.Combine(OutputPath, $"ByTeacherSummary.txt");
 			File.WriteAllText(path, content);
 

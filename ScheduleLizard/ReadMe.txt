@@ -1,4 +1,5 @@
 ﻿There needs to be a file named "Camper Preferences.csv" in the same folder
+	- CHECK FOR DUPLICATE NAMES
 	- must have a header line
 	- must have columns: signUpDate, camperName, class1Preference...
 	- can comment out lines by starting with //
@@ -8,3 +9,11 @@ There needs to be a file named "Course Schedule.csv"in the same folder.
 	- must have a header line
 	- must have columns: Name,Capacity,Period,Teacher,Room
 	- can comment out lines by starting with //
+Print "ByStudentPrintable.txt" using word
+	- make it two columns
+	- adjust page height to fit whole kids
+Print "ByClassPrintable.txt" using word
+print "ByStudent.csv" using Excel
+	- Auto-width columns
+	- Narrow margins
+Print "ByTeacherSummary" using word
