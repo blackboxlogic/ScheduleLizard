@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace ScheduleLizard
 {
+	// TODO: list duplicate camper names
+	// enumerate by preference major, camper minor
 	class Program
 	{
 		const string OutputPath = "Output";
@@ -166,12 +168,13 @@ namespace ScheduleLizard
 		{
 			var content = string.Join("\r\n" + MSWordPageBreak,
 				courses.GroupBy(c => c.Teacher)
+					.OrderBy(g => g.Key)
 					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Room})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
 			var path = Path.Combine(OutputPath, $"ByClassPrintable.txt");
 			File.WriteAllText(path, content);
 
 			var pad = courses.Max(c => $"p{c.Period} {c.Name}".Length + 2);
-			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Room}"))));
+			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).OrderBy(g => g.Key).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Room}"))));
 			content = $"{courses.SelectMany(c => c.Students).Distinct().Count()} students across {courses.Count()} class periods.\r\n{content}";
 			path = Path.Combine(OutputPath, $"ByTeacherSummary.txt");
 			File.WriteAllText(path, content);
