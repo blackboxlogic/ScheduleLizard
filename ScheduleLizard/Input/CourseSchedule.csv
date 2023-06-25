@@ -29,20 +29,20 @@ City Constructors,15,1,Josh,B-110,false
 City Constructors,15,2,Josh,B-110,false
 Limestone Delenda Est,15,3,Josh,B-110,false
 Limestone Delenda Est,15,4,Josh,B-110,false
+// EVEN Numbers
+Alien Landing,12,1,Cindy,B-113,true
+Alien Landing,12,1,Cindy,B-113,true
+Escape Room,12,1,Cindy,B-113,false
+Escape Room,12,1,Cindy,B-113,false
 //
-Egg Drop,10,1,Cindy,B-113,false
-Egg Drop,10,1,Cindy,B-113,false
-Escape Room,10,1,Cindy,B-113,false
-Escape Room,10,1,Cindy,B-113,false
+Stop! Motion?,15,1,Beth,B-109,true
+//OLDER ONLY//Calc U Later,15,2,Rye,B-109,true
+//OLDER ONLY//Calc U Later,15,3,Rye,B-109,true
+Stop! Motion?,15,4,Beth,B-109,true
 //
-//Stop! Motion?,15,1,Beth,B-109,true
-//Stop! Motion?,15,2,Beth,B-109,true
-//OLDER ONLY//Calc You Later,15,3,Rye,B-109,true
-//OLDER ONLY//Calc You Later,15,4,Rye,B-109,true
-//
-//Programming,15,1,Rex,Computer Lab,false
-//Programming,15,2,Rex,Computer Lab,false
-//OLDER ONLY//Some Mo'gramming,15,2,Rex,Computer Lab,false
-//Rocketry,15,3,Zack,B-112,true
-//Rocketry,15,3,Zack,B-112,true
+Rocketry,15,3,Zack,B-112,true
+Rocketry,15,3,Zack,B-112,true
+Programming,15,3,Rex,Computer Lab,false
+Programming,15,4,Rex,Computer Lab,false
+//OLDER ONLY//Some Mo'gramming,15,4,Rex,Computer Lab,false
 //

@@ -16,9 +16,9 @@ namespace ScheduleLizard
 	{
 		const string StudentListFile = @"Input\StudentList.csv";
 		const string CourseScheduleFile = @"Input\CourseSchedule.csv";
-		const string StudentPreferenceFile = @"Input\StudentPreference.csv";
+		const string StudentPreferenceFile = @"Input\StudentPreferences.csv";
 
-		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.doc";
+		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.txt";
 		const string StudentPreferenceTemplateFile = @"Output\StudentPreferenceTemplate.csv";
 		const string RasterByClassPrintable = @"Output\ByClassPrintable.txt";
 		const string RasterByTeacherSummary = @"Output\ByTeacherSummary.txt";
@@ -33,17 +33,13 @@ namespace ScheduleLizard
 			try
 			{
 				var courses = InputCourses().ToArray();
-				
-				//CleanOutputFolder(); //?
+				//CleanOutputFolder();
 
 				//if (!File.Exists(SurveyFilePath))
-				{
-					var students = InputStudents().ToArray();
-					WriteSurvey(courses, students);
-					WritePreferenceTemplate(courses, students);
-				}
+					//var students = InputStudents().ToArray();
+					//WriteSurvey(courses, students);
+					//WritePreferenceTemplate(courses, students);
 				//else
-				{
 					var studentPreferences = InputPreferences().ToArray();
 
 					SummarizeCoursePopularity(courses, studentPreferences);
@@ -52,7 +48,7 @@ namespace ScheduleLizard
 					CalculateSchedule(courses, studentPreferences);
 					WriteStudentSchedules(studentPreferences);
 					WriteClassSchedules(courses);
-				}
+				//
 			}
 			catch (Exception e)
 			{
@@ -208,7 +204,7 @@ namespace ScheduleLizard
 
 			for (var preferenceIndex = 0; preferenceIndex < courseCount; preferenceIndex++)
 			{
-				foreach (var student in students.OrderBy(s => s.Priority))
+				foreach (var student in students.OrderByDescending(s => s.Priority))
 				{
 					var prefered = student.CoursePreferencesInOrder[preferenceIndex];
 
