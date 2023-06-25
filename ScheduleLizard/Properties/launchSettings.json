@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ScheduleLizard": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\Alex\\source\\repos\\ScheduleLizard\\ScheduleLizard"
+    }
+  }
+}

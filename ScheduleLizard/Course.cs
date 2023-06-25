@@ -10,11 +10,12 @@ namespace ScheduleLizard
 		public string Room;
 		public int Capacity;
 		public int Period;
+		public bool CanRetake;
 		public readonly List<Student> Students = new List<Student>();
 
 		public override string ToString()
 		{
-			return $"{Name}({Period})";
+			return $"{Name}({Teacher}/{Period})";
 		}
 	}
 }
