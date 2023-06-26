@@ -4,6 +4,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Numerics;
 
 namespace ScheduleLizard
 {
@@ -11,7 +12,12 @@ namespace ScheduleLizard
 	// TODO: list duplicate camper names
 	// TODO: blacklist two-weekers
 	// TODO: Report relative course interest
-	// enumerate by preference major, camper minor
+
+	// SURVEY Teacher presenters should be in paper order
+	// SURVEY Maybe just describe the couses on the paper
+	// SURVEY Put teacher names
+	// CINDY EVEN NUMBERS
+	// by student output should be family major
 	class Program
 	{
 		const string StudentListFile = @"Input\StudentList.csv";
@@ -42,7 +48,7 @@ namespace ScheduleLizard
 				//else
 					var studentPreferences = InputPreferences().ToArray();
 
-					SummarizeCoursePopularity(courses, studentPreferences);
+					SummarizeCoursePopularity(studentPreferences);
 
 					Validate(courses, studentPreferences);
 					CalculateSchedule(courses, studentPreferences);
@@ -57,16 +63,6 @@ namespace ScheduleLizard
 
 			Console.ReadKey(true);
 		}
-
-		//static void CleanOutputFolder()
-		//{
-		//	if (Directory.Exists(OutputPath))
-		//	{
-		//		Directory.Delete(OutputPath, true);
-		//	}
-
-		//	Directory.CreateDirectory(OutputPath);
-		//}
 
 		static Course[] InputCourses()
 		{
@@ -109,7 +105,7 @@ namespace ScheduleLizard
 				.Select(l =>l.Split(','))
 				.ToArray();
 			var courses = lines[0].Skip(2).ToArray();
-			var studentLines = lines.Skip(1).OrderBy(s => int.Parse(s[0])).ToArray();
+			var studentLines = lines.Skip(1).OrderBy(s => int.Parse(s[1])).ToArray();
 
 			foreach (string[] studentLine in studentLines)
 			{
@@ -126,10 +122,7 @@ namespace ScheduleLizard
 				{
 					preferences = studentLine
 						.Skip(2) // Skip priority and name
-						.Select(rank =>
-							rank == "NO" || rank == "0" ? 999 :
-							rank == "" ? 50 :
-							int.Parse(rank))
+						.Select(rank => rank == "" ? 50 : int.Parse(rank))
 						.Concat(Enumerable.Repeat(1, courses.Length))
 						.Zip(courses, (p, c) => new { p, c })
 						.Shuffle(RandomSeed)
@@ -144,11 +137,16 @@ namespace ScheduleLizard
 			}
 		}
 
-		static void SummarizeCoursePopularity(IEnumerable<Course> courses, IEnumerable<Student> students)
+		static void SummarizeCoursePopularity(IEnumerable<Student> students)
 		{
-			var popularity = students.SelectMany(s => s.CoursePreferencesInOrder.Take(4)).GroupBy(c => c).ToDictionary(c => c.Key, c => c.Count());
+			var popularity = students
+				.SelectMany(s => s.CoursePreferencesInOrder.Take(4))
+				.GroupBy(c => c)
+				.ToDictionary(c => c.Key, c => c.Count())
+				.OrderByDescending(p => p.Value)
+				.ToArray();
 
-			foreach (var pop in popularity.OrderByDescending(p => p.Value))
+			foreach (var pop in popularity)
 			{
 				Console.WriteLine($"{pop.Key}: {pop.Value}");
 			}
@@ -156,6 +154,11 @@ namespace ScheduleLizard
 
 		static void Validate(IEnumerable<Course> courses, IEnumerable<Student> students)
 		{
+			if (students.SelectMany(s => s.ClassSchedule).Any(c => c.Name == ""))
+			{
+				throw new Exception("Studen got assigned an empty course?");
+			}
+
 			// No two campers have the same name
 			var dupeStudents = students.GroupBy(s => s.Name).Where(g => g.Count() > 1).Select(g => g.Key).ToArray();
 			if (dupeStudents.Any())
@@ -175,11 +178,11 @@ namespace ScheduleLizard
 			}
 
 			// Student preferences match available courses
-			var missingClasses = students.SelectMany(s => s.CoursePreferencesInOrder).Distinct().Except(courses.Select(c => c.Name)).ToArray();
-			if (missingClasses.Any())
-			{
-				throw new Exception($"{string.Join(", ", missingClasses)} classes were requested but are not offered");
-			}
+			//var missingClasses = students.SelectMany(s => s.CoursePreferencesInOrder).Distinct().Except(courses.Select(c => c.Name)).ToArray();
+			//if (missingClasses.Any())
+			//{
+			//	throw new Exception($"{string.Join(", ", missingClasses)} classes were requested but are not offered");
+			//}
 
 			// Only one class per period per teacher
 			var overBookedTeachers = courses.GroupBy(c => new { c.Period, c.Teacher }).Where(g => g.Count() > 1).Select(g => g.Key).ToArray();
@@ -201,6 +204,21 @@ namespace ScheduleLizard
 			var periods = courses.Max(c => c.Period);
 			var courseCount = courses.GroupBy(c => c.Name).Count();
 			var score = 0;
+
+			var c1 = courses.Single(c => c.Name == "Stop! Motion?" && c.Period == 1);
+			var c2 = courses.Single(c => c.Name == "Lego Robotics" && c.Period == 2);
+			var c3 = courses.Single(c => c.Name == "Programming" && c.Period == 3);
+			var c4 = courses.Single(c => c.Name == "Parts & Pieces" && c.Period == 4);
+			var s1 = students.Single(s => s.Name.Contains(" Sene"));
+			var s2 = students.Single(s => s.Name.Contains(" Doan"));
+			s1.ClassSchedule.Add(c1); c1.Students.Add(s1);
+			s1.ClassSchedule.Add(c2); c2.Students.Add(s1);
+			s1.ClassSchedule.Add(c3); c3.Students.Add(s1);
+			s1.ClassSchedule.Add(c4); c4.Students.Add(s1);
+			s2.ClassSchedule.Add(c1); c1.Students.Add(s2);
+			s2.ClassSchedule.Add(c2); c2.Students.Add(s2);
+			s2.ClassSchedule.Add(c3); c3.Students.Add(s2);
+			s2.ClassSchedule.Add(c4); c4.Students.Add(s2);
 
 			for (var preferenceIndex = 0; preferenceIndex < courseCount; preferenceIndex++)
 			{
@@ -248,7 +266,7 @@ namespace ScheduleLizard
 			var content = string.Join("\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name},{string.Join(",", s.ClassSchedule.OrderBy(c => c.Period).Select(c => c.Name))}"));
 			File.WriteAllText(ByStudent, content);
 
-			content = string.Join("\r\n\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name}\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name}"))}"));
+			content = string.Join("\r\n\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name}\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name} ({s.Room})"))}"));
 			File.WriteAllText(ByStudentPrintable, content);
 		}
 

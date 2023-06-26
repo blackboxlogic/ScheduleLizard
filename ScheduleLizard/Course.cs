@@ -15,7 +15,7 @@ namespace ScheduleLizard
 
 		public override string ToString()
 		{
-			return $"{Name}({Teacher}/{Period})";
+			return $"{Name} ({Teacher}, p{Period}, {Students.Count}/{Capacity})";
 		}
 	}
 }
