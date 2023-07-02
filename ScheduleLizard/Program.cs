@@ -4,7 +4,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Numerics;
 
 namespace ScheduleLizard
 {
@@ -15,24 +14,24 @@ namespace ScheduleLizard
 
 	// SURVEY Teacher presenters should be in paper order
 	// SURVEY Maybe just describe the couses on the paper
-	// SURVEY Put teacher names
-	// CINDY EVEN NUMBERS
-	// by student output should be family major
+	// CINDY EVEN NUMBERS ONLY
 	class Program
 	{
 		const string StudentListFile = @"Input\StudentList.csv";
 		const string CourseScheduleFile = @"Input\CourseSchedule.csv";
 		const string StudentPreferenceFile = @"Input\StudentPreferences.csv";
+		const string ByStudentOLD = @"Input\ByStudent.csv";
 
 		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.txt";
 		const string StudentPreferenceTemplateFile = @"Output\StudentPreferenceTemplate.csv";
 		const string RasterByClassPrintable = @"Output\ByClassPrintable.txt";
 		const string RasterByTeacherSummary = @"Output\ByTeacherSummary.txt";
 		const string ByStudentPrintable = @"Output\ByStudentPrintable.txt";
-		const string ByStudent = @"Output\ByStudent.txt";
+		const string ByStudent = @"Output\ByStudent.csv";
 
 		const int RandomSeed = 100; // Deterministic output
 		const char MSWordPageBreak = '\f';
+		const bool PackTightly = false; // vs load ballance
 
 		static void Main(string[] args)
 		{
@@ -81,18 +80,18 @@ namespace ScheduleLizard
 			return File.ReadAllLines(StudentListFile)
 				.Where(l => !l.StartsWith("//")) // Skip comment lines
 				.Select(l => l.Split(','))
-				.Select(n => new Student() { Name = n[0], Family = n[1] })
+				.Select(n => new Student() { Name = n[0], Location = n[1] })
 				.ToArray();
 		}
 
 		static void WritePreferenceTemplate(IEnumerable<Course> courses, IEnumerable<Student> students)
 		{
 			var content = new StringBuilder();
-			content.AppendLine(string.Join(",", courses.Select(c => c.Name).Distinct().Prepend("priority").Prepend("studentName")));
+			content.AppendLine(string.Join(",", courses.Select(c => c.Name).Distinct().Prepend("location").Prepend("priority").Prepend("studentName")));
 
 			foreach (var student in students)
 			{
-				content.AppendLine(string.Join(",", student.Name, 0));
+				content.AppendLine(string.Join(",", student.Name, 0, student.Location));
 			}
 
 			File.WriteAllText(StudentPreferenceTemplateFile, content.ToString());
@@ -104,16 +103,29 @@ namespace ScheduleLizard
 				.Where(l => !l.StartsWith("//")) // Skip comment lines
 				.Select(l =>l.Split(','))
 				.ToArray();
-			var courses = lines[0].Skip(2).ToArray();
+			var courses = lines[0].Skip(3).ToArray();
 			var studentLines = lines.Skip(1).OrderBy(s => int.Parse(s[1])).ToArray();
+			var pastClasses = new Dictionary<string, string[]>();
+
+			if (File.Exists(ByStudentOLD))
+			{
+				pastClasses = File.ReadAllLines(ByStudentOLD)
+					.Select(l => l.Split(","))
+					.ToDictionary(l => l[0], l => l.Skip(1).ToArray());
+			}
+			else
+			{
+				Console.WriteLine("Warning: no past class list found.");
+			}
 
 			foreach (string[] studentLine in studentLines)
 			{
 				var name = studentLine[0];
 				var priority = int.Parse(studentLine[1]);
+				var family = studentLine[2];
 				string[] preferences;
 
-				if (studentLine.Length != courses.Length + 2)
+				if (studentLine.Length != courses.Length + 3)
 				{
 					Console.WriteLine($"WARNING: Student {name} has the wrong number of course preferences");
 					preferences = new string[0];
@@ -121,7 +133,7 @@ namespace ScheduleLizard
 				else
 				{
 					preferences = studentLine
-						.Skip(2) // Skip priority and name
+						.Skip(3) // Skip priority, name, family
 						.Select(rank => rank == "" ? 50 : int.Parse(rank))
 						.Concat(Enumerable.Repeat(1, courses.Length))
 						.Zip(courses, (p, c) => new { p, c })
@@ -131,7 +143,18 @@ namespace ScheduleLizard
 						.ToArray();
 				}
 
-				var student = new Student() { Name = name, Priority = priority, CoursePreferencesInOrder = preferences };
+				var student = new Student()
+				{
+					Name = name,
+					Priority = priority,
+					CoursePreferencesInOrder = preferences
+				};
+
+				if (pastClasses.ContainsKey(name))
+				{
+					student.PastTakenClasses = pastClasses[name];
+					Console.WriteLine($"Detected repeat student: {name}");
+				}
 
 				yield return student;
 			}
@@ -203,7 +226,11 @@ namespace ScheduleLizard
 		{
 			var periods = courses.Max(c => c.Period);
 			var courseCount = courses.GroupBy(c => c.Name).Count();
-			var score = 0;
+			var qualityControl = new Dictionary<int, int>();
+
+			var coursesOrdered = PackTightly
+				? courses.OrderByDescending(c => c.Students.Count)
+				: courses.OrderBy(c => c.Students.Count);
 
 			var c1 = courses.Single(c => c.Name == "Stop! Motion?" && c.Period == 1);
 			var c2 = courses.Single(c => c.Name == "Lego Robotics" && c.Period == 2);
@@ -222,22 +249,24 @@ namespace ScheduleLizard
 
 			for (var preferenceIndex = 0; preferenceIndex < courseCount; preferenceIndex++)
 			{
+				qualityControl[preferenceIndex] = 0;
+
 				foreach (var student in students.OrderByDescending(s => s.Priority))
 				{
 					var prefered = student.CoursePreferencesInOrder[preferenceIndex];
 
 					if (student.ClassSchedule.Count < periods)
 					{
-						foreach (var course in courses.OrderBy(c => c.Students.Count)) // Balance class sizes
-						//foreach (var course in courses.OrderBy(c => c.Students.Count)) // Packed tight
+						foreach (var course in coursesOrdered)
 						{
 							if (course.Name == prefered
 								&& course.Students.Count < course.Capacity
-								&& !student.ClassSchedule.Select(c => c.Period).Contains(course.Period))
+								&& !student.ClassSchedule.Select(c => c.Period).Contains(course.Period)
+								&& (course.CanRetake || !student.PastTakenClasses.Contains(course.Name)))
 							{
 								course.Students.Add(student);
 								student.ClassSchedule.Add(course);
-								score += preferenceIndex;
+								qualityControl[preferenceIndex] = qualityControl[preferenceIndex] + 1;
 								break;
 							}
 						}
@@ -246,7 +275,11 @@ namespace ScheduleLizard
 			}
 
 			var lowestScore = Enumerable.Range(0, periods).Sum() * students.Count();
-			Console.WriteLine($"Preference misses: {score-lowestScore}");
+
+			foreach (var q in qualityControl.Where(q => q.Value != 0).OrderBy(q => q.Key))
+			{
+				Console.WriteLine($"{q.Key} choice matches: {q.Value}/{students.Count()}");
+			}
 
 			foreach (var student in students.OrderBy(s => s.Priority))
 			{
@@ -266,7 +299,7 @@ namespace ScheduleLizard
 			var content = string.Join("\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name},{string.Join(",", s.ClassSchedule.OrderBy(c => c.Period).Select(c => c.Name))}"));
 			File.WriteAllText(ByStudent, content);
 
-			content = string.Join("\r\n\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name}\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name} ({s.Room})"))}"));
+			content = string.Join("\r\n\r\n", students.OrderBy(s => s.Location).ThenBy(s => s.Name).Select(s => $"{s.Name} ({s.Location})\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name} ({s.Room})"))}"));
 			File.WriteAllText(ByStudentPrintable, content);
 		}
 
@@ -290,19 +323,19 @@ namespace ScheduleLizard
 		{
 			Console.Out.WriteLine("Writing Survey.txt");
 
-			var courseNames = courses.Select(c => c.Name).Distinct().ToArray();
+			var distinctCourses = courses.GroupBy(c => c.Name).Select(g => g.First()).ToArray();
 
 			StringBuilder content = new StringBuilder();
 
 			foreach (var student in students)
 			{
-				content.AppendLine($"{student.Name} ({student.Family})");
-				content.AppendLine($"Rank 1 through {courseNames.Length} next to each (1 is the best)");
+				content.AppendLine($"{student.Name} ({student.Location})");
+				content.AppendLine($"Rank 1 through {distinctCourses.Length} next to each (1 is the best)");
 				content.AppendLine();
 
-				foreach (var course in courseNames)
+				foreach (var course in distinctCourses)
 				{
-					content.AppendLine($"____  {course}");
+					content.AppendLine($"____  {course.Name} ({course.Teacher})");
 					content.AppendLine();
 				}
 
