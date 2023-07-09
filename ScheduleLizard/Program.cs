@@ -40,14 +40,15 @@ namespace ScheduleLizard
 
 				while(true)
 				{
-					if (Console.ReadKey().KeyChar == '1')
+					var key = Console.ReadKey().KeyChar;
+					if (key == '1')
 					{
 						var courses = InputCourses();
 						var students = InputStudents();
 						WriteSurvey(courses, students);
 						WritePreferenceTemplate(courses, students);
 					}
-					else if (Console.ReadKey().KeyChar == '2')
+					else if (key == '2')
 					{
 						var courses = InputCourses();
 						var studentPreferences = InputStudentsWithPreferences().ToArray();
@@ -57,13 +58,13 @@ namespace ScheduleLizard
 						WriteStudentSchedules(studentPreferences);
 						WritePrintable(courses, studentPreferences);
 					}
-					else if (Console.ReadKey().KeyChar == '3')
+					else if (key == '3')
 					{
 						var courses = InputCourses();
 						var studentSchedules = ReadStudentSchedules(courses).ToArray();
 						WritePrintable(courses, studentSchedules);
 					}
-					else if (Console.ReadKey().KeyChar == '4')
+					else if (key == '4')
 					{
 						return;
 					}
@@ -72,6 +73,7 @@ namespace ScheduleLizard
 			catch (Exception e)
 			{
 				Console.Error.WriteLine(e);
+				Console.ReadKey();
 			}
 		}
 
