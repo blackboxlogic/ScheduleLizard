@@ -7,12 +7,9 @@ using System.Text;
 
 namespace ScheduleLizard
 {
-	// TODO: Generate the printable and summray based on the student class list file (update one, generate the others)
-	// TODO: Can't schedule programming and lego together
-	// TODO: Configure classes which can't be taken together... like cube and higher cube
 	// TODO: Require prerequisits, or student declares their level for programming
 	// TODO: Read/Write to google drive?
-	// TODO: Generate the class schedule based on interest?
+	// TODO: Generate the class schedule based on class interest summary?
 
 	class Program
 	{
@@ -85,7 +82,14 @@ namespace ScheduleLizard
 				.Skip(1) // ignore header line
 				.Select(l => l.Split(','))
 				.ToArray();
-			var schedule = lines.Select(l => new Course() { Name = l[0], Capacity = int.Parse(l[1]), Period = int.Parse(l[2]), Teacher = l[3], Room = l[4], CanRetake = bool.Parse(l[5]) }).ToArray();
+			var schedule = lines.Select(l => new Course() {
+				Name = l[0],
+				Capacity = int.Parse(l[1]),
+				Period = int.Parse(l[2]),
+				Teacher = l[3],
+				Location = l[4],
+				CanRetake = bool.Parse(l[5]),
+				topic = l.Length > 6 ? l[6] : null }).ToArray();
 
 			return schedule;
 		}
@@ -264,10 +268,10 @@ namespace ScheduleLizard
 			}
 
 			// Only one class per period per room
-			var overBookedRooms = courses.GroupBy(c => new { c.Period, c.Room }).Where(g => g.Count() > 1).Select(g => g.Key).ToArray();
+			var overBookedRooms = courses.GroupBy(c => new { c.Period, c.Location }).Where(g => g.Count() > 1).Select(g => g.Key).ToArray();
 			foreach (var overRoom in overBookedRooms)
 			{
-				throw new Exception($"{overRoom.Room} is overbook in period {overRoom.Period}.");
+				throw new Exception($"{overRoom.Location} is overbook in period {overRoom.Period}.");
 			}
 		}
 
@@ -309,7 +313,7 @@ namespace ScheduleLizard
 								&& course.Students.Count < course.Capacity
 								&& !student.ClassSchedule.Select(c => c.Period).Contains(course.Period)
 								&& (course.CanRetake || !student.PastTakenClasses.Contains(course.Name))
-								&& !CourseIsRedundant(course, student))
+								&& !student.ClassSchedule.Any(c => c.topic != null && c.topic == course.topic))
 							{
 								course.Students.Add(student);
 								student.ClassSchedule.Add(course);
@@ -346,14 +350,12 @@ namespace ScheduleLizard
 			{
 				Console.WriteLine("Warning, Cindy's classes have an odd number of students");
 			}
-		}
 
-		static bool CourseIsRedundant(Course course, Student student)
-		{
-			return course.Name == "Rubik's Cube" && student.ClassSchedule.Any(c => c.Name == "Higher Cubing")
-				|| course.Name == "Higher Cubing" && student.ClassSchedule.Any(c => c.Name == "Rubik's Cube")
-				|| course.Name == "Some Mo'gramming" && student.ClassSchedule.Any(c => c.Name == "Programming")
-				|| course.Name == "Programming" && student.ClassSchedule.Any(c => c.Name == "Some Mo'gramming");
+			var duplicateTopic = students.Where(s => s.ClassSchedule.GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
+			if (duplicateTopic.Any())
+			{
+				Console.WriteLine("Warning, Kids have duplciate topics");
+			}
 		}
 
 		static void WriteStudentSchedules(Student[] students)
@@ -365,17 +367,17 @@ namespace ScheduleLizard
 
 		static void WritePrintable(Course[] courses, Student[] students)
 		{
-			var content = string.Join("\r\n\r\n", students.OrderBy(s => s.Location).ThenBy(s => s.Name).Select(s => $"{s.Name} ({s.Location})\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name} ({s.Room})"))}"));
+			var content = string.Join("\r\n\r\n", students.OrderBy(s => s.Location).ThenBy(s => s.Name).Select(s => $"{s.Name} ({s.Location})\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name} ({s.Location})"))}"));
 			File.WriteAllText(ByStudentPrintable, content);
 
 			content = string.Join("\r\n" + MSWordPageBreak,
 				courses.GroupBy(c => c.Teacher)
 					.OrderBy(g => g.Key)
-					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Room})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
+					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Location})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
 			File.WriteAllText(RasterByClassPrintable, content);
 
 			var pad = courses.Max(c => $"p{c.Period} {c.Name}".Length + 2);
-			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).OrderBy(g => g.Key).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Room}"))));
+			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).OrderBy(g => g.Key).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Location}"))));
 			content = $"{courses.SelectMany(c => c.Students).Distinct().Count()} students across {courses.Count()} class periods.\r\n{content}";
 			File.WriteAllText(RasterByTeacherSummary, content);
 

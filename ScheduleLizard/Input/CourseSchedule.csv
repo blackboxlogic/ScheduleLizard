@@ -1,14 +1,19 @@
-Name,Capacity,Period,Teacher,Room,CanRetake
+Name,Capacity,Period,Teacher,Room,CanRetake,Topic(optional)
 //
+// Can't schedule programming and lego together
 Lego Robotics,15,1,Alex,Maker Space,false
 Lego Robotics,15,2,Alex,Maker Space,false
 Parts & Pieces,15,3,Alex,Maker Space,false
 Parts & Pieces,15,4,Alex,Maker Space,false
 //
-Flying High,15,1,Andy,B-106,false
-Math Art,15,2,Andy,B-106,false
+Crafty Calculations,15,1,Andy,B-106,false
+Crafty Calculations,15,2,Andy,B-106,false
+Soaring with Science,15,3,Andy,B-106,false
+Soaring with Science,15,4,Andy,B-106,false
 //
-Science Behind Color,15,3,Taylor,B-104,true
+Science Behind Color,15,1,Taylor,B-104,true
+Science Behind Color,15,2,Taylor,B-104,true
+Let's Get Chemical,15,3,Taylor,B-104,false
 Let's Get Chemical,15,4,Taylor,B-104,false
 //
 3D Printing,15,1,Chris,B-108,true
@@ -16,9 +21,9 @@ Let's Get Chemical,15,4,Taylor,B-104,false
 Welcome to Mars,15,3,Chris,B-108,false
 Welcome to Mars,15,4,Chris,B-108,false
 //
-Rubik's Cube,15,1,Chandler,B-107,false
-Rubik's Cube,15,2,Chandler,B-107,false
-Mechanical Mayhem,15,3,Chandler,B-107,false
+Rubik's Cube,15,1,Chandler,B-107,false,Cube
+Rubik's Cube,15,2,Chandler,B-107,false,Cube
+Higher Cubing,15,3,Chandler,B-107,true,Cube
 Mechanical Mayhem,15,4,Chandler,B-107,false
 //
 City Constructors,15,1,Josh,B-110,false
@@ -26,19 +31,18 @@ City Constructors,15,2,Josh,B-110,false
 Limestone Delenda Est,15,3,Josh,B-110,false
 Limestone Delenda Est,15,4,Josh,B-110,false
 // EVEN Numbers
-Alien Landing,8,1,Cindy,B-113,true
+Alien Landing,12,1,Cindy,B-113,true
 Alien Landing,12,2,Cindy,B-113,true
 Escape Room,12,3,Cindy,B-113,false
 Escape Room,12,4,Cindy,B-113,false
 //
-Stop! Motion?,15,1,Beth,B-109,true
-//OLDER ONLY//Calc U Later,15,2,Rye,B-109,true
-//OLDER ONLY//Calc U Later,15,3,Rye,B-109,true
-Stop! Motion?,15,4,Beth,B-109,true
+Stop! Motion?,12,1,Beth,B-109,true
+Stop! Motion?,12,2,Beth,B-109,true
+Calc U Later,12,3,Rye,B-109,true
+Calc U Later,12,4,Rye,B-109,true
 //
-Rocketry,15,1,Zack,B-112,true
-Rocketry,15,2,Zack,B-112,true
-Programming,15,3,Rex,Computer Lab,false
-Programming,15,4,Rex,Computer Lab,false
-//OLDER ONLY//Some Mo'gramming,15,4,Rex,Computer Lab,false
+Rocketry,12,1,Zack,B-112,true
+Rocketry,12,2,Zack,B-112,true
+Some Mo'gramming,12,3,Rex,Computer Lab,false,Programming
+Programming,12,4,Rex,Computer Lab,false,Programming
 //
