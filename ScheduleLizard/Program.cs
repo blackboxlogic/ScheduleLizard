@@ -287,16 +287,6 @@ namespace ScheduleLizard
 				? courses.OrderByDescending(c => c.Students.Count)
 				: courses.OrderBy(c => c.Students.Count);
 
-			//var c1 = courses.Single(c => c.Name == "Stop! Motion?" && c.Period == 1);
-			//var c2 = courses.Single(c => c.Name == "Lego Robotics" && c.Period == 2);
-			//var c3 = courses.Single(c => c.Name == "Programming" && c.Period == 3);
-			//var c4 = courses.Single(c => c.Name == "Parts & Pieces" && c.Period == 4);
-			//var s1 = students.Single(s => s.Name.Contains(" Sene"));
-			//s1.ClassSchedule.Add(c1); c1.Students.Add(s1);
-			//s1.ClassSchedule.Add(c2); c2.Students.Add(s1);
-			//s1.ClassSchedule.Add(c3); c3.Students.Add(s1);
-			//s1.ClassSchedule.Add(c4); c4.Students.Add(s1);
-
 			students = students.Shuffle(RandomSeed).ToArray();
 
 			for (var preferenceIndex = 0; preferenceIndex < courseCount; preferenceIndex++)
@@ -343,7 +333,6 @@ namespace ScheduleLizard
 				if (student.ClassSchedule.Count < periods)
 				{
 					Console.WriteLine($"Student {student.Name} only has {student.ClassSchedule.Count}/{periods} classes");
-					//throw new Exception($"Student {student.Name} only has {student.ClassSchedule.Count}/{periods} classes");
 				}
 			}
 

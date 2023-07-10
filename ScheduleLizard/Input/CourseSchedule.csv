@@ -35,14 +35,14 @@ Alien Landing,12,1,Cindy,B-113,true
 Alien Landing,12,2,Cindy,B-113,true
 Escape Room,12,3,Cindy,B-113,false
 Escape Room,12,4,Cindy,B-113,false
-//
+// Only 4 working cameras
 Stop! Motion?,12,1,Beth,B-109,true
 Stop! Motion?,12,2,Beth,B-109,true
-Calc U Later,12,3,Rye,B-109,true
-Calc U Later,12,4,Rye,B-109,true
+Calc U Later,15,3,Rye,B-109,true
+Calc U Later,15,4,Rye,B-109,true
 //
-Rocketry,12,1,Zack,B-112,true
-Rocketry,12,2,Zack,B-112,true
-Some Mo'gramming,12,3,Rex,Computer Lab,false,Programming
-Programming,12,4,Rex,Computer Lab,false,Programming
+Rocketry,15,1,Zack,B-112,true
+Rocketry,15,2,Zack,B-112,true
+Some Mo'gramming,15,3,Rex,Computer Lab,false,Programming
+Programming,15,4,Rex,Computer Lab,false,Programming
 //
