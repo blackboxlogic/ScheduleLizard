@@ -18,7 +18,7 @@ namespace ScheduleLizard
 		const string StudentPreferenceFile = @"Input\StudentPreferences.csv";
 		// A list of campers and the classes they've taken previously to prevent re-takes.
 		// <studentName>,<className>,<className>... (No header line)
-		const string ByStudentOLD = @"Input\ClassesByStudentOLD.csv";
+		const string ByStudentOLD = @"Input\ClassesByStudentWeek2.csv";
 
 		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.txt";
 		const string StudentPreferenceTemplateFile = @"Output\StudentPreferenceTemplate.csv";
@@ -353,7 +353,7 @@ namespace ScheduleLizard
 				Console.WriteLine("Warning, Cindy's classes have an odd number of students");
 			}
 
-			var duplicateTopic = students.Where(s => s.ClassSchedule.GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
+			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.topic != null).GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
 			if (duplicateTopic.Any())
 			{
 				Console.WriteLine("Warning, Kids have duplciate topics");
@@ -412,7 +412,7 @@ namespace ScheduleLizard
 				content.Append(MSWordPageBreak);
 			}
 
-			File.WriteAllText(SurveyFilePath, content.ToString());
+			File.WriteAllText(SurveyFilePath.TrimEnd(MSWordPageBreak), content.ToString());
 		}
 	}
 }

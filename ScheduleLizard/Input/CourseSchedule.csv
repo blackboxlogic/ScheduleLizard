@@ -22,8 +22,8 @@ Welcome to Mars,15,3,Chris,B-108,false
 Welcome to Mars,15,4,Chris,B-108,false
 //
 Rubik's Cube,15,1,Chandler,B-107,false,Cube
-Rubik's Cube,15,2,Chandler,B-107,false,Cube
-Higher Cubing,15,3,Chandler,B-107,true,Cube
+Higher Cubing,15,2,Chandler,B-107,false,Cube
+Higher Cubing,15,3,Chandler,B-107,false,Cube
 Mechanical Mayhem,15,4,Chandler,B-107,false
 //
 City Constructors,15,1,Josh,B-110,false
