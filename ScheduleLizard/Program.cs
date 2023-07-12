@@ -53,7 +53,7 @@ namespace ScheduleLizard
 						var courses = InputCourses();
 						var studentPreferences = InputStudentsWithPreferences().ToArray();
 						Validate(courses, studentPreferences);
-						SummarizeCoursePopularity(studentPreferences);
+						SummarizeCoursePopularity(courses, studentPreferences);
 						CalculateSchedule(courses, studentPreferences);
 						WriteStudentSchedules(studentPreferences);
 						WritePrintable(courses, studentPreferences);
@@ -107,7 +107,7 @@ namespace ScheduleLizard
 
 		static IEnumerable<Student> ReadStudentSchedules(Course[] courses)
 		{
-			var pastClasses = File.ReadAllLines(ByStudentOLD)
+			var pastClasses = File.ReadAllLines(ByStudent)
 				.Select(l => l.Split(","))
 				.ToArray();
 			foreach (var record in pastClasses)
@@ -120,7 +120,9 @@ namespace ScheduleLizard
 
 				for (int i = 1; i < 5; i++) // Assumes 4 period day
 				{
-					student.ClassSchedule.Add(courses.Single(c => c.Period == i && c.Name == record[1 + i]));
+					var course = courses.Single(c => c.Period == i && c.Name == record[1 + i]);
+					student.ClassSchedule.Add(course);
+					course.Students.Add(student);
 				}
 
 				yield return student;
@@ -215,18 +217,26 @@ namespace ScheduleLizard
 			}
 		}
 
-		static void SummarizeCoursePopularity(IEnumerable<Student> students)
+		static void SummarizeCoursePopularity(IEnumerable<Course> courses, IEnumerable<Student> students)
 		{
-			var popularity = students
+			var classPopularity = students
 				.SelectMany(s => s.CoursePreferencesInOrder.Take(4))
 				.GroupBy(c => c)
-				.ToDictionary(c => c.Key, c => c.Count())
-				.OrderByDescending(p => p.Value)
-				.ToArray();
+				.ToDictionary(c => c.Key, c => c.Count());
 
-			foreach (var pop in popularity)
+			var coursesByName = courses.GroupBy(c => c.Name).ToDictionary(g => g.Key, g => g.ToArray());
+
+			Console.WriteLine($"Popularity by class");
+			foreach (var course in classPopularity.OrderByDescending(p => p.Value))
 			{
-				Console.WriteLine($"{pop.Key}: {pop.Value}");
+				Console.WriteLine($"{course.Key}: {course.Value}");
+			}
+
+			Console.WriteLine($"Popularity by period");
+			foreach (var period in courses.GroupBy(c => c.Period).OrderBy(g => g.Key))
+			{
+				var popularity = period.Sum(c => classPopularity[c.Name]);
+				Console.WriteLine($"P{period.Key}: {popularity}");
 			}
 		}
 
