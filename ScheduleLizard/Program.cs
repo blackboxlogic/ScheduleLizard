@@ -7,9 +7,8 @@ using System.Text;
 
 namespace ScheduleLizard
 {
-	// TODO: Require prerequisits, or student declares their level for programming
-	// TODO: Read/Write to google drive?
-	// TODO: Generate the class schedule based on class interest summary?
+	// TODO: Define order of class topics, so student can go up but not down?
+	// TODO: Read/Write to google drive? A database? A static website?
 
 	class Program
 	{
@@ -18,7 +17,7 @@ namespace ScheduleLizard
 		const string StudentPreferenceFile = @"Input\StudentPreferences.csv";
 		// A list of campers and the classes they've taken previously to prevent re-takes.
 		// <studentName>,<className>,<className>... (No header line)
-		const string ByStudentOLD = @"Input\ClassesByStudentWeek2.csv";
+		const string ByStudentOLD = @"Input\ClassesByStudentWeek3.csv";
 
 		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.txt";
 		const string StudentPreferenceTemplateFile = @"Output\StudentPreferenceTemplate.csv";
