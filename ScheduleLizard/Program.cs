@@ -7,6 +7,7 @@ using System.Text;
 
 namespace ScheduleLizard
 {
+	// TODO: List classes which are open for a period
 	// TODO: Define order of class topics, so student can go up but not down?
 	// TODO: Read/Write to google drive? A database? A static website?
 
@@ -20,11 +21,11 @@ namespace ScheduleLizard
 		const string ByStudentOLD = @"Input\ClassesByStudentWeek3.csv";
 
 		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.txt";
-		const string StudentPreferenceTemplateFile = @"Output\StudentPreferenceTemplate.csv";
+		const string StudentPreferenceTemplateFile = @"Output\StudentPreferencesTemplate.csv";
+		const string ByStudent = @"Output\ClassesByStudent.csv";
 		const string RasterByClassPrintable = @"Output\ClassesRosterPrintable.txt";
 		const string RasterByTeacherSummary = @"Output\ClassesByTeacherSummary.txt";
 		const string ByStudentPrintable = @"Output\ClassesByStudentPrintable.txt";
-		const string ByStudent = @"Output\ClassesByStudent.csv";
 
 		const int RandomSeed = 100; // Deterministic output
 		const char MSWordPageBreak = '\f';
@@ -35,10 +36,10 @@ namespace ScheduleLizard
 		{
 			try
 			{
-				Console.WriteLine("1) Generate Survey\n2) calculate/print Schedule\n3) re-print schedules\n4) exit");
-
 				while(true)
 				{
+					Console.WriteLine("1) Generate Survey\n2) calculate/print Schedule\n3) re-print schedules\n4) exit");
+
 					var key = Console.ReadKey().KeyChar;
 					if (key == '1')
 					{
@@ -107,6 +108,7 @@ namespace ScheduleLizard
 		static IEnumerable<Student> ReadStudentSchedules(Course[] courses)
 		{
 			var pastClasses = File.ReadAllLines(ByStudent)
+				.Where(l => !l.StartsWith("//"))
 				.Select(l => l.Split(","))
 				.ToArray();
 			foreach (var record in pastClasses)
@@ -133,7 +135,7 @@ namespace ScheduleLizard
 			var content = new StringBuilder();
 			content.AppendLine(string.Join(",", courses.Select(c => c.Name).Distinct().Prepend("location").Prepend("priority").Prepend("studentName")));
 
-			foreach (var student in students)
+			foreach (var student in students.OrderBy(s => s.Location).ThenBy(s => s.Name))
 			{
 				content.AppendLine(string.Join(",", student.Name, 0, student.Location));
 			}
@@ -236,6 +238,13 @@ namespace ScheduleLizard
 			{
 				var popularity = period.Sum(c => classPopularity[c.Name]);
 				Console.WriteLine($"P{period.Key}: {popularity}");
+			}
+
+			Console.WriteLine($"Slots by period");
+			foreach (var period in courses.GroupBy(c => c.Period).OrderBy(g => g.Key))
+			{
+				var slots = period.Sum(c => c.Capacity);
+				Console.WriteLine($"P{period.Key}: {slots}");
 			}
 		}
 
@@ -367,7 +376,7 @@ namespace ScheduleLizard
 
 		static void WritePrintable(Course[] courses, Student[] students)
 		{
-			var content = string.Join("\r\n\r\n", students.OrderBy(s => s.Location).ThenBy(s => s.Name).Select(s => $"{s.Name} ({s.Location})\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name} ({s.Location})"))}"));
+			var content = string.Join("\r\n\r\n", students.OrderBy(s => s.Location).ThenBy(s => s.Name).Select(s => $"{s.Name} ({s.Location})\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name}"))}"));
 			File.WriteAllText(ByStudentPrintable, content);
 
 			content = string.Join("\r\n" + MSWordPageBreak,
@@ -393,7 +402,8 @@ namespace ScheduleLizard
 			StringBuilder content = new StringBuilder();
 
 			foreach (var student in students
-				.Concat(Enumerable.Repeat(new Student() { Name = "_______________________________", Location = "___________" }, 13))
+				// Add some extra nameless surveys
+				.Concat(Enumerable.Repeat(new Student() { Name = "_______________________________", Location = "___________" }, (int)(students.Length * .07)))
 				.OrderBy(s => s.Location)
 				.ThenBy(s => s.Name))
 			{

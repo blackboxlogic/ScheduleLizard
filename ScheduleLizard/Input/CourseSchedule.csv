@@ -1,48 +1,47 @@
 Name,Capacity,Period,Teacher,Room,CanRetake,Topic(optional)
+// Week 4
 //
-// Can't schedule programming and lego together
-Lego Robotics,15,1,Alex,Maker Space,false
-Lego Robotics,15,2,Alex,Maker Space,false
-Parts & Pieces,15,3,Alex,Maker Space,false
-Parts & Pieces,15,4,Alex,Maker Space,false
 //
-Crafty Calculations,15,1,Andy,B-106,false
-Crafty Calculations,15,2,Andy,B-106,false
-Soaring with Science,15,3,Andy,B-106,false
-Soaring with Science,15,4,Andy,B-106,false
+Programming,15,1,Alex,Maker Space (with Andy),true
+Chess,15,2,Alex,Maker Space (with Beth),true
+Lego Robotics,15,3,Alex,Maker Space (with Peter),true
+Parts & Pieces,15,4,Alex,Maker Space (with Peter),true
 //
-Science Behind Color,15,1,Taylor,B-104,true
-Science Behind Color,15,2,Taylor,B-104,true
-Let's Get Chemical,15,3,Taylor,B-104,false
-Let's Get Chemical,15,4,Taylor,B-104,false
 //
-3D Printing,15,1,Chris,B-108,true
-3D Printing,15,2,Chris,B-108,true
-Welcome to Mars,15,3,Chris,B-108,false
-Welcome to Mars,15,4,Chris,B-108,false
+//Crafty Calculations,15,1,Andy,B-106 (with Parker),false
+Crafty Calculations,15,2,Andy,B-106 (with Parker),false
+Soaring with Science,15,3,Andy,B-106 (with Parker),false
+Soaring with Science,15,4,Andy,B-106 (with Parker),false
 //
-Rubik's Cube,15,1,Chandler,B-107,false,Cube
-Higher Cubing,15,2,Chandler,B-107,false,Cube
-Higher Cubing,15,3,Chandler,B-107,false,Cube
-Mechanical Mayhem,15,4,Chandler,B-107,false
 //
-City Constructors,15,1,Josh,B-110,false
-City Constructors,15,2,Josh,B-110,false
-Limestone Delenda Est,15,3,Josh,B-110,false
-Limestone Delenda Est,15,4,Josh,B-110,false
-// EVEN Numbers
-Alien Landing,12,1,Cindy,B-113,true
-Alien Landing,12,2,Cindy,B-113,true
-Escape Room,12,3,Cindy,B-113,false
-Escape Room,12,4,Cindy,B-113,false
-// Only 4 working cameras
-Stop! Motion?,12,1,Beth,B-109,true
-Stop! Motion?,12,2,Beth,B-109,true
-Calc U Later,15,3,Rye,B-109,true
-Calc U Later,15,4,Rye,B-109,true
+Science Behind Color,15,1,Taylor,B-104 (with Erin),true
+Science Behind Color,15,2,Taylor,B-104 (with Erin),true
+Let's Get Chemical,15,3,Taylor,B-104 (with Erin),false
+Let's Get Chemical,15,4,Taylor,B-104 (with Erin),false
 //
-Rocketry,15,1,Zack,B-112,true
-Rocketry,15,2,Zack,B-112,true
-Some Mo'gramming,15,3,Rex,Computer Lab,false,Programming
-Programming,15,4,Rex,Computer Lab,false,Programming
 //
+3D Printing,14,1,Chris,B-108 (with Hannah/Luci),true
+3D Printing,14,2,Chris,B-108 (with Hannah/Luci),true
+Welcome to Mars,14,3,Chris,B-108 (with Hannah/Luci),false
+Welcome to Mars,14,4,Chris,B-108 (with Hannah/Luci),false
+//
+//
+Rubik's Cube,15,1,Chandler,B-107 (with Harmony),false,Cube
+Rubik's Cube,15,2,Chandler,B-107 (with Harmony),false,Cube
+Mechanical Mayhem,15,4,Chandler,B-107 (with Harmony),false
+//
+//
+City Constructors,15,1,Josh,B-110 (with Aubrey),false
+City Constructors,15,2,Josh,B-110 (with Aubrey),false
+City Constructors,15,3,Josh,B-110 (with Aubrey),false
+//
+//
+// EVEN Numbers preferred
+Alien Landing,12,1,Cindy,B-113 (with Jean),true
+// EVEN Numbers required
+Escape Room,12,2,Cindy,B-113 (with Jean),true
+Escape Room,12,3,Cindy,B-113 (with Jean),false
+Escape Room,12,4,Cindy,B-113 (with Jean),false
+//
+//
+Calc U Later,15,3,Rye,B-109 (with Beth),true
