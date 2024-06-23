@@ -1,47 +1,28 @@
-Name,Capacity,Period,Teacher,Room,CanRetake,Topic(optional)
-// Week 4
-//
-//
-Programming,15,1,Alex,Maker Space (with Andy),true
-Chess,15,2,Alex,Maker Space (with Beth),true
-Lego Robotics,15,3,Alex,Maker Space (with Peter),true
-Parts & Pieces,15,4,Alex,Maker Space (with Peter),true
-//
-//
-//Crafty Calculations,15,1,Andy,B-106 (with Parker),false
-Crafty Calculations,15,2,Andy,B-106 (with Parker),false
-Soaring with Science,15,3,Andy,B-106 (with Parker),false
-Soaring with Science,15,4,Andy,B-106 (with Parker),false
-//
-//
-Science Behind Color,15,1,Taylor,B-104 (with Erin),true
-Science Behind Color,15,2,Taylor,B-104 (with Erin),true
-Let's Get Chemical,15,3,Taylor,B-104 (with Erin),false
-Let's Get Chemical,15,4,Taylor,B-104 (with Erin),false
-//
-//
-3D Printing,14,1,Chris,B-108 (with Hannah/Luci),true
-3D Printing,14,2,Chris,B-108 (with Hannah/Luci),true
-Welcome to Mars,14,3,Chris,B-108 (with Hannah/Luci),false
-Welcome to Mars,14,4,Chris,B-108 (with Hannah/Luci),false
-//
-//
-Rubik's Cube,15,1,Chandler,B-107 (with Harmony),false,Cube
-Rubik's Cube,15,2,Chandler,B-107 (with Harmony),false,Cube
-Mechanical Mayhem,15,4,Chandler,B-107 (with Harmony),false
-//
-//
-City Constructors,15,1,Josh,B-110 (with Aubrey),false
-City Constructors,15,2,Josh,B-110 (with Aubrey),false
-City Constructors,15,3,Josh,B-110 (with Aubrey),false
-//
-//
-// EVEN Numbers preferred
-Alien Landing,12,1,Cindy,B-113 (with Jean),true
-// EVEN Numbers required
-Escape Room,12,2,Cindy,B-113 (with Jean),true
-Escape Room,12,3,Cindy,B-113 (with Jean),false
-Escape Room,12,4,Cindy,B-113 (with Jean),false
-//
-//
-Calc U Later,15,3,Rye,B-109 (with Beth),true
+Class Name,Capacity,Periods,Teacher,Room,CanRetake,Topic
+Echo-o-o,15,4,Alex,Computer Lab,FALSE,
+Programming,15,2;3,Alex,Computer Lab,FALSE,Prog
+Advanced Programming,15,,Alex,Computer Lab,FALSE,Prog
+Chess,15,1,Alex,Dorm Lounge,FALSE,
+Lego Robotics,15,,Alex,Maker Space,FALSE,
+3D Printing,15,1;2,Beckwith,Upstairs Comp Lab,FALSE,
+Space Engineers,15,3;4,Beckwith,Upstairs Comp Lab,FALSE,
+Rube? Goldberg,15,1;4,Boggsie,B-107,FALSE,
+Stream Survey,15,2;3,Boggsie,B-107,FALSE,
+Rubik's Cube,15,1;3,Chandler,B-106,FALSE,Cube
+Higher Level Cubing,15,,Chandler,B-106,FALSE,Cube
+Engineering Explorations,15,2;4,Chandler,B-106,FALSE,
+Chemistry Lab,15,1;2;3;4,Dr. Jayasundara,Upstails Chem Lab,FALSE,
+Architects in Training,15,,Jean Paul,B-112,FALSE,
+Stats & Strats,15,,Jean Paul,B-112,FALSE,
+City Constructors,15,1;4,Josh,B-110,FALSE,
+Comic Book Heros,15,2;3,Josh,B-110,FALSE,
+CSI Limestone,15,1;2,Katie,Maker Space,FALSE,
+Breakerspace,15,3;4,Katie,Maker Space,FALSE,
+Alien Landing (EEE),15,1;2,Kayla,B-104,FALSE,
+Soaring Skyward,15,3;4,Kayla,B-104,FALSE,
+Lift Off,15,1;4,Mr. Berz,B-105,FALSE,
+Astronomical Tour,15,2;3,Mr. Berz,B-105,FALSE,
+Tower of Terror,15,,Rex,,FALSE,
+Real Life CSI,15,,Roy Smith,,FALSE,
+Calculus,15,1;4,Rye,B-109,FALSE,
+Trigonometry,15,2;3,Rye,B-109,FALSE,

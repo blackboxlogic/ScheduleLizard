@@ -7,8 +7,8 @@ using System.Text;
 
 namespace ScheduleLizard
 {
-	// TODO: List classes which are open for a period
-	// TODO: Define order of class topics, so student can go up but not down?
+	// TODO: Verify with teachers: capacity, time of day, how many of each, your "name", class "name", preferred helper, can retake
+	// TODO: Define order of class series, so student can go up but not down?
 	// TODO: Read/Write to google drive? A database? A static website?
 
 	class Program
@@ -80,18 +80,20 @@ namespace ScheduleLizard
 		static Course[] InputCourses()
 		{
 			var lines = File.ReadAllLines(CourseScheduleFile)
-				.Where(l => !l.StartsWith("//")) // Allow comment lines
 				.Skip(1) // ignore header line
+				.Where(l => !l.StartsWith("//")) // Allow comment lines
 				.Select(l => l.Split(','))
 				.ToArray();
 			var schedule = lines.Select(l => new Course() {
 				Name = l[0],
 				Capacity = int.Parse(l[1]),
-				Period = int.Parse(l[2]),
+				Periods = l[2],
 				Teacher = l[3],
 				Location = l[4],
 				CanRetake = bool.Parse(l[5]),
-				topic = l.Length > 6 ? l[6] : null }).ToArray();
+				topic = l.Length > 6 ? l[6] : null })
+				.SelectMany(c => c.AsPeriods()) // break into periods
+				.ToArray();
 
 			return schedule;
 		}
@@ -99,6 +101,7 @@ namespace ScheduleLizard
 		static Student[] InputStudents()
 		{
 			return File.ReadAllLines(StudentListFile)
+				.Skip(1) // ignore header line
 				.Where(l => !l.StartsWith("//")) // Skip comment lines
 				.Select(l => l.Split(','))
 				.Select(n => new Student() { Name = n[0], Location = n[1] })
@@ -408,7 +411,7 @@ namespace ScheduleLizard
 				.ThenBy(s => s.Name))
 			{
 				content.AppendLine($"{student.Name} (Fam: {student.Location})");
-				content.AppendLine($"Rank 1 through {distinctCourses.Length} next to each (1 is the best)");
+				content.AppendLine($"Write 1 on your favorite class, 2 on your second, 3 on your third... up to {Math.Min(9, distinctCourses.Length)}. Leave the rest blank.");
 				content.AppendLine();
 
 				foreach (var course in distinctCourses)
