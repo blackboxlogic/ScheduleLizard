@@ -255,7 +255,7 @@ namespace ScheduleLizard
 		{
 			if (students.SelectMany(s => s.ClassSchedule).Any(c => c.Name == ""))
 			{
-				throw new Exception("Studen got assigned an empty course?");
+				throw new Exception("Student got assigned an empty course?");
 			}
 
 			// No two campers have the same name
@@ -326,7 +326,7 @@ namespace ScheduleLizard
 								&& course.Students.Count < course.Capacity
 								&& !student.ClassSchedule.Select(c => c.Period).Contains(course.Period)
 								&& (course.CanRetake || !student.PastTakenClasses.Contains(course.Name))
-								&& !student.ClassSchedule.Any(c => c.topic != null && c.topic == course.topic))
+								&& !student.ClassSchedule.Any(c => c.topic != null && c.topic != "" && c.topic == course.topic))
 							{
 								course.Students.Add(student);
 								student.ClassSchedule.Add(course);
@@ -363,7 +363,7 @@ namespace ScheduleLizard
 				Console.WriteLine("Warning, Cindy's classes have an odd number of students");
 			}
 
-			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.topic != null).GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
+			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.topic != null && c.topic != "").GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
 			if (duplicateTopic.Any())
 			{
 				Console.WriteLine("Warning, Kids have duplciate topics");
@@ -410,8 +410,8 @@ namespace ScheduleLizard
 				.OrderBy(s => s.Location)
 				.ThenBy(s => s.Name))
 			{
-				content.AppendLine($"{student.Name} (Fam: {student.Location})");
-				content.AppendLine($"Write 1 on your favorite class, 2 on your second, 3 on your third... up to {Math.Min(9, distinctCourses.Length)}. Leave the rest blank.");
+				content.AppendLine($"{student.Name} ({student.Location} family)");
+				content.AppendLine($"Write 1 on your favorite class, 2 on your second favorite... up to {Math.Min(9, distinctCourses.Length)}. Leave the rest blank.");
 				content.AppendLine();
 
 				foreach (var course in distinctCourses)
@@ -423,7 +423,7 @@ namespace ScheduleLizard
 				content.Append(MSWordPageBreak);
 			}
 
-			File.WriteAllText(SurveyFilePath.TrimEnd(MSWordPageBreak), content.ToString());
+			File.WriteAllText(SurveyFilePath, content.ToString().TrimEnd(MSWordPageBreak));
 		}
 	}
 }

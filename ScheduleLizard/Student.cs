@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ScheduleLizard
 {
@@ -12,5 +13,10 @@ namespace ScheduleLizard
 		public string[] CoursePreferencesInOrder;
 		public string[] PastTakenClasses;
 		public List<Course> ClassSchedule = new List<Course>();
+
+		public override string ToString()
+		{
+			return $"{Name} ({Location}, {string.Join(", ", ClassSchedule.OrderBy(c => c.Period).Select(c => c.Period + "." + c.Name))}";
+		}
 	}
 }
