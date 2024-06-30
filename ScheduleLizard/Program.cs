@@ -7,7 +7,6 @@ using System.Text;
 
 namespace ScheduleLizard
 {
-	// TODO: Verify with teachers: capacity, time of day, how many of each, your "name", class "name", preferred helper, can retake
 	// TODO: Define order of class series, so student can go up but not down?
 	// TODO: Read/Write to google drive? A database? A static website?
 
@@ -29,7 +28,7 @@ namespace ScheduleLizard
 
 		const int RandomSeed = 100; // Deterministic output
 		const char MSWordPageBreak = '\f';
-		const bool PackTightly = false; // vs load ballance
+		const bool PackTightly = false; // vs load balance
 		const bool PrioritizeNewStudents = true;
 
 		static void Main(string[] args)
@@ -280,7 +279,7 @@ namespace ScheduleLizard
 			var missingClasses = students.SelectMany(s => s.CoursePreferencesInOrder).Distinct().Except(courses.Select(c => c.Name)).ToArray();
 			if (missingClasses.Any())
 			{
-				throw new Exception($"{string.Join(", ", missingClasses)} classes were requested but are not offered");
+				Console.WriteLine("Warning: " + $"{string.Join(", ", missingClasses)} classes were requested but are not offered");
 			}
 
 			// Only one class per period per teacher
@@ -355,12 +354,6 @@ namespace ScheduleLizard
 				{
 					Console.WriteLine($"Student {student.Name} only has {student.ClassSchedule.Count}/{periods} classes");
 				}
-			}
-
-			var uneven = courses.Where(c => c.Name == "Alien Landing" || c.Name == "Escape Room").Where(c => c.Students.Count % 2 == 1).ToArray();
-			if (uneven.Any())
-			{
-				Console.WriteLine("Warning, Cindy's classes have an odd number of students");
 			}
 
 			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.topic != null && c.topic != "").GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
