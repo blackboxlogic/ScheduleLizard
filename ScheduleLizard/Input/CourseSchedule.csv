@@ -1,13 +1,13 @@
 Class Name,Capacity,Periods,Teacher,Room,CanRetake,Topic
-Echo-o-o,15,1,Alex,Computer Lab,FALSE,
-Programming,12,2;3,Alex,Computer Lab,FALSE,Prog
+Echo-o-o,15,2,Alex,Computer Lab,FALSE,
+Programming,12,1;3,Alex,Computer Lab,FALSE,Prog
 Advanced Programming,12,,Alex,Computer Lab,FALSE,Prog
 Chess,15,4,Alex,Dorm Lounge,FALSE,
 Lego Robotics,15,,Alex,Maker Space,FALSE,
 3D Printing,15,1,Mr. Beckwith,Upstairs Comp Lab,FALSE,
 Space Engineers,15,2;3;4,Mr. Beckwith,Upstairs Comp Lab,FALSE,
-Rube? Goldberg,15,1;4,Boggsie,B-107,TRUE,
-Stream Survey,15,2;3,Boggsie,B-107,TRUE,
+Rube? Goldberg,15,2;3,Boggsie,B-107,TRUE,
+Stream Survey,15,,Boggsie,B-107,TRUE,
 Rubik's Cube,20,1;3,Chandler,B-106,TRUE,Cube
 Higher Level Cubing,20,4,Chandler,B-106,TRUE,Cube
 Engineering Vexplorations,12,2,Chandler,B-106,FALSE,
@@ -20,8 +20,8 @@ CSI Limestone,15,1;2,Katie,Maker Space,FALSE,
 Breakerspace,15,3;4,Katie,Maker Space,TRUE,
 Alien Landing,12,1;2,Ms. Kayla,B-104,FALSE,
 Soaring Skyward,12,3;4,Ms. Kayla,B-104,FALSE,
-Lift Off,15,3;4,Mr. Berz,B-105,FALSE,
-Astronomical Tour,15,1;2,Mr. Berz,B-105,FALSE,
+Lift Off,15,1;2,Mr. Berz,B-105,FALSE,
+Astronomical Tour,15,3,Mr. Berz,B-105,FALSE,
 Tower of (Math) Terror,15,,Rex,,FALSE,
 Real Life CSI,15,,Roy Smith,,FALSE,
 Calc U Later,15,1;4,Rye,B-109,TRUE,
