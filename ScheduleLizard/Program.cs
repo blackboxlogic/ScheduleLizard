@@ -13,7 +13,7 @@ namespace ScheduleLizard
 	class Program
 	{
 		const string StudentListFile = @"Input\StudentList.csv";
-		const string CourseScheduleFile = @"Input\CourseDetails.csv";
+		const string CourseScheduleFile = @"Input\CourseDefinitions.csv";
 		const string StudentPreferenceFile = @"Input\StudentPreferences.csv";
 		// A list of campers and the classes they've taken previously to prevent re-takes.
 		// <studentName>,<className>,<className>... (No header line)
