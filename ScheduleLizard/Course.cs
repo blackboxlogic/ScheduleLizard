@@ -14,6 +14,7 @@ namespace ScheduleLizard
 		public int Period;
 		public bool CanRetake;
 		public string topic; // to say that two classes might be different levels of the same topic and kids shouldn't be in both of them
+		public int? level;
 		public List<Student> Students = new List<Student>();
 
 		public IEnumerable<Course> AsPeriods()

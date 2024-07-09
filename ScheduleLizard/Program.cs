@@ -8,28 +8,29 @@ using System.Text;
 namespace ScheduleLizard
 {
 	// TODO: Define order of class series, so student can go up but not down?
-	// TODO: Read/Write to google drive? A database? A static website?
+	// TODO: Read/Write to google drive? A database? A static website? PDF?
 
 	class Program
 	{
 		const string StudentListFile = @"Input\StudentList.csv";
-		const string CourseScheduleFile = @"Input\CourseSchedule.csv";
+		const string CourseScheduleFile = @"Input\CourseDetails.csv";
 		const string StudentPreferenceFile = @"Input\StudentPreferences.csv";
 		// A list of campers and the classes they've taken previously to prevent re-takes.
 		// <studentName>,<className>,<className>... (No header line)
-		const string ByStudentOLD = @"Input\ClassesByStudentWeek3.csv";
+		const string ByStudentOLD = @"Input\OldClassesByStudent.csv";
 
 		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.txt";
 		const string StudentPreferenceTemplateFile = @"Output\StudentPreferencesTemplate.csv";
-		const string ByStudent = @"Output\ClassesByStudent.csv";
-		const string RasterByClassPrintable = @"Output\ClassesRosterPrintable.txt";
-		const string RasterByTeacherSummary = @"Output\ClassesByTeacherSummary.txt";
-		const string ByStudentPrintable = @"Output\ClassesByStudentPrintable.txt";
+		const string ByStudent = @"Output\Student Schedules.csv";
+		const string RasterByClassPrintable = @"Output\Classes Rosters.txt";
+		const string RasterByTeacherSummary = @"Output\Teacher Schedules.txt";
+		const string ByStudentPrintable = @"Output\Student Schedules.txt";
 
 		const int RandomSeed = 100; // Deterministic output
 		const char MSWordPageBreak = '\f';
 		const bool PackTightly = false; // vs load balance
 		const bool PrioritizeNewStudents = true;
+		const int DefaultPreference = 50;
 
 		static void Main(string[] args)
 		{
@@ -182,7 +183,7 @@ namespace ScheduleLizard
 				{
 					preferences = studentLine
 						.Skip(3) // Skip priority, name, family
-						.Select(rank => rank == "" ? 50 : int.Parse(rank))
+						.Select(rank => rank == "" ? DefaultPreference : int.Parse(rank))
 						.Concat(Enumerable.Repeat(1, courses.Length))
 						.Zip(courses, (p, c) => new { p, c })
 						.Shuffle(RandomSeed)
@@ -209,7 +210,7 @@ namespace ScheduleLizard
 						student.Priority -= 1;
 					}
 
-					Console.WriteLine($"Detected repeat student: {name}");
+					Console.WriteLine($"Detected returning student: {name}");
 				}
 				else
 				{
@@ -242,7 +243,7 @@ namespace ScheduleLizard
 				Console.WriteLine($"P{period.Key}: {popularity}");
 			}
 
-			Console.WriteLine($"Slots by period");
+			Console.WriteLine($"Available class slots by period");
 			foreach (var period in courses.GroupBy(c => c.Period).OrderBy(g => g.Key))
 			{
 				var slots = period.Sum(c => c.Capacity);

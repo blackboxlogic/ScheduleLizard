@@ -4,3 +4,7 @@ obj
 /.vs/ScheduleLizard/v16/*.suo
 /.vs/ScheduleLizard/DesignTimeBuild
 .vs
+/ScheduleLizard/Output
+/ScheduleLizard/Input/StudentList.csv
+/ScheduleLizard/Input/OldClassesByStudent.csv
+/ScheduleLizard/Input/StudentPreferences.csv
