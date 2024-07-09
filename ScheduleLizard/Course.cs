@@ -9,6 +9,7 @@ namespace ScheduleLizard
 		public string Name;
 		public string Teacher;
 		public string Location;
+		public int MinCapacity;
 		public int Capacity;
 		public string Periods; // like "1;2;4"
 		public int Period;

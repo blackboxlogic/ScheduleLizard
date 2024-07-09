@@ -86,12 +86,14 @@ namespace ScheduleLizard
 				.ToArray();
 			var schedule = lines.Select(l => new Course() {
 				Name = l[0],
-				Capacity = int.Parse(l[1]),
-				Periods = l[2],
-				Teacher = l[3],
-				Location = l[4],
-				CanRetake = bool.Parse(l[5]),
-				topic = l.Length > 6 ? l[6] : null })
+				MinCapacity = int.Parse(l[1]),
+				Capacity = int.Parse(l[2]),
+				Periods = l[3],
+				Teacher = l[4],
+				Location = l[5],
+				CanRetake = bool.Parse(l[6]),
+				topic = l.Length > 7 ? l[7] : null,
+				level = l.Length > 8 ? int.Parse(l[8]) : (int?)null})
 				.SelectMany(c => c.AsPeriods()) // break into periods
 				.ToArray();
 
@@ -366,7 +368,13 @@ namespace ScheduleLizard
 			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.topic != null && c.topic != "").GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
 			if (duplicateTopic.Any())
 			{
-				Console.WriteLine("Warning, Kids have duplciate topics");
+				Console.WriteLine("Warning, Kids have duplicate topics");
+			}
+
+			var smallClasses = courses.Where(c => c.Students.Count < c.MinCapacity).ToArray();
+			foreach(var smallClass in smallClasses)
+			{
+				Console.WriteLine($"Warning, {smallClass.Name} has fewer than {smallClass.MinCapacity} students.");
 			}
 		}
 
