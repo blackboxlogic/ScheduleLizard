@@ -323,9 +323,15 @@ namespace ScheduleLizard
 						foreach (var course in coursesOrdered)
 						{
 							if (course.Name == prefered
+								// class isn't full
 								&& course.Students.Count < course.Capacity
+								// student is available for this class period
 								&& !student.ClassSchedule.Select(c => c.Period).Contains(course.Period)
+								// class can be retaken or student hasn't taken it before
 								&& (course.CanRetake || !student.PastTakenClasses.Contains(course.Name))
+								// student hasn't taken a higher level class of the same topic
+								//&& (!courses.Where(c => student.PastTakenClasses.Contains(c.Name)).Any(c => c.topic == course.topic && c.level <= course.level))
+								// student isn't taking a class with the same topic
 								&& !student.ClassSchedule.Any(c => c.topic != null && c.topic != "" && c.topic == course.topic))
 							{
 								course.Students.Add(student);
