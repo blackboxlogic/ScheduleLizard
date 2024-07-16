@@ -1,28 +1,22 @@
-Class Name,Min,Capacity,Periods,Teacher,Room,CanRetake,Topic,Level
-Echo-o-o,,15,3,Alex,Computer Lab,FALSE,,
-Programming,,12,1,Alex,Computer Lab,FALSE,Prog,1
-Advanced Programming,,12,2,Alex,Computer Lab,FALSE,Prog,2
-Chess,,16,4,Alex,Dorm Lounge,FALSE,,
-Lego Robotics,,15,,Alex,Maker Space,FALSE,,
-3D Printing,,15,1,Mr. Beckwith,Upper Comp Lab,FALSE,,
-Space Engineers,,15,2;3;4,Mr. Beckwith,Upper Comp Lab,FALSE,,
-Rube? Goldberg,,15,,Boggsie,B-107,TRUE,,
-Stream Survey,,15,,Boggsie,B-107,TRUE,,
-Rubik's Cube,,12,1;3,Chandler,B-106,TRUE,Cube,1
-Higher Level Cubing,,12,2,Chandler,B-106,TRUE,Cube,2
-Engineering Vexplorations,,12,4,Chandler,B-106,TRUE,,
-Chemistry Lab,,15,1;2;3;4,Dr. J,Upper Chem Lab,FALSE,,
-Architects in Training,,15,1;2,Jean,B-112,TRUE,,
-Stats & Strats,,15,3;4,Jean,B-112,TRUE,,
-City Constructors,6,12,1;3,Mr. Primiano,B-110,TRUE,,
-Comic Book Heros,4,12,2,Mr. Primiano,B-110,TRUE,,
-CSI Limestone,5,15,1;2,Katie,Maker Space,FALSE,,
-Breakerspace,2,12,3;4,Katie,Maker Space,TRUE,,
-Alien Landing,,14,1;2,Ms. Kayla,B-104,FALSE,,
-Soaring Skyward,,14,3;4,Ms. Kayla,B-104,FALSE,,
-Lift Off,,15,3;4,Mr. Berz,B-105,FALSE,,
-Astronomical Tour,,15,1;2,Mr. Berz,B-105,FALSE,,
-Tower of (Math) Terror,4,15,1;2,Rex,B-108,FALSE,,
-Real Life CSI,,15,,Roy Smith,,FALSE,,
-Calc U Later,4,15,1;4,Rye,B-109,TRUE,,
-A Trek Thru Trig,4,15,2;3,Rye,B-109,TRUE,,
+Class Name,Min,Capacity,Periods,Teacher,Room,CanRetake,Topic,Level,Helpers
+Echo-o-o,,12,4,Alex,B-112,FALSE,,,Eliana
+Programming,,12,1,Alex,Computer Lab,FALSE,Prog,1,Rex
+Advanced Programming,,12,,Alex,Computer Lab,FALSE,Prog,2,
+Chess,,15,,Alex,Dorm Lounge,FALSE,,,
+Lego Robotics,,15,2,Alex,B-112,FALSE,,,Rex
+3D Printing,,15,1,Mr. Beckwith,Upper Comp Lab,FALSE,,,Derek Brown
+Space Engineers,,15,2;3,Mr. Beckwith,Upper Comp Lab,FALSE,,,Derek Brown
+Rubik's Cube,,12,4,Chandler,B-106,TRUE,Cube,1,John
+Higher Level Cubing,,12,,Chandler,B-106,TRUE,Cube,2,John
+Engineering Vexplorations,,12,1,Chandler,B-106,TRUE,,,John
+Chemistry Lab,,15,1;2;3,Dr. J,Upper Chem Lab,FALSE,,,Sharisse
+City Constructors,6,12,1;3,Mr. Primiano,B-110,TRUE,,,Mary Dresser
+Comic Book Heros,4,12,2,Mr. Primiano,B-110,TRUE,,,Mary Dresser
+CSI Limestone,5,15,1;2,Katie,Maker Space,FALSE,,,Roy
+Breakerspace,2,12,3;4,Katie,Maker Space,TRUE,,,Roy/Hannah
+Alien Landing,,14,4,Ms. Kayla,B-104,FALSE,,,Owen
+Soaring Skyward,,14,2,Ms. Kayla,B-104,FALSE,,,Mary Dresser
+Lift Off,,15,,Mr. Berz,B-105,FALSE,,,
+Astronomical Tour,,15,3;4,Mr. Berz,B-105,FALSE,,,Lukasz/Elliott
+Calc U Later,4,15,2;4,Rye,B-109,TRUE,,,alone/Elizabeth
+A Trek Thru Trig,4,15,3,Rye,B-109,TRUE,,,alone

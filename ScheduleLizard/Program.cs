@@ -7,7 +7,6 @@ using System.Text;
 
 namespace ScheduleLizard
 {
-	// TODO: Define order of class series, so student can go up but not down?
 	// TODO: Read/Write to google drive? A database? A static website? PDF?
 
 	class Program
@@ -21,10 +20,10 @@ namespace ScheduleLizard
 
 		const string SurveyFilePath = @"Output\StudentCourseSurveyPrintable.txt";
 		const string StudentPreferenceTemplateFile = @"Output\StudentPreferencesTemplate.csv";
-		const string ByStudent = @"Output\Student Schedules.csv";
-		const string RasterByClassPrintable = @"Output\Classes Rosters.txt";
-		const string RasterByTeacherSummary = @"Output\Teacher Schedules.txt";
-		const string ByStudentPrintable = @"Output\Student Schedules.txt";
+		const string ByStudentGrid = @"Output\Student Schedules.csv";
+		const string ClassRosters = @"Output\Classes Rosters.txt";
+		const string TeacherSchedules = @"Output\Teacher Schedules.txt";
+		const string StudentSchedules = @"Output\Student Schedules.txt";
 
 		const int RandomSeed = 100; // Deterministic output
 		const char MSWordPageBreak = '\f';
@@ -86,14 +85,15 @@ namespace ScheduleLizard
 				.ToArray();
 			var schedule = lines.Select(l => new Course() {
 				Name = l[0],
-				MinCapacity = int.Parse(l[1]),
+				MinCapacity = l[1] == "" ? (int?) null : int.Parse(l[1]),
 				Capacity = int.Parse(l[2]),
 				Periods = l[3],
 				Teacher = l[4],
 				Location = l[5],
 				CanRetake = bool.Parse(l[6]),
-				topic = l.Length > 7 ? l[7] : null,
-				level = l.Length > 8 ? int.Parse(l[8]) : (int?)null})
+				Topic = l[7],
+				Level = l[8] == "" ? (int?)null : int.Parse(l[8]),
+				Helpers = l[9]})
 				.SelectMany(c => c.AsPeriods()) // break into periods
 				.ToArray();
 
@@ -112,7 +112,7 @@ namespace ScheduleLizard
 
 		static IEnumerable<Student> ReadStudentSchedules(Course[] courses)
 		{
-			var pastClasses = File.ReadAllLines(ByStudent)
+			var pastClasses = File.ReadAllLines(ByStudentGrid)
 				.Where(l => !l.StartsWith("//"))
 				.Select(l => l.Split(","))
 				.ToArray();
@@ -126,9 +126,16 @@ namespace ScheduleLizard
 
 				for (int i = 1; i < 5; i++) // Assumes 4 period day
 				{
-					var course = courses.Single(c => c.Period == i && c.Name == record[1 + i]);
-					student.ClassSchedule.Add(course);
-					course.Students.Add(student);
+					if (record[1 + i] == "")
+					{
+						Console.WriteLine($"{student.Name} ({student.Location}) doesn't have a period {i} class. Looked for class named '{record[1 + i]}'");
+					}
+					else
+					{
+						var course = courses.Single(c => c.Period == i && c.Name == record[1 + i]);
+						student.ClassSchedule.Add(course);
+						course.Students.Add(student);
+					}
 				}
 
 				yield return student;
@@ -334,7 +341,7 @@ namespace ScheduleLizard
 								// student hasn't taken a higher level class of the same topic
 								//&& (!courses.Where(c => student.PastTakenClasses.Contains(c.Name)).Any(c => c.topic == course.topic && c.level <= course.level))
 								// student isn't taking a class with the same topic
-								&& !student.ClassSchedule.Any(c => c.topic != null && c.topic != "" && c.topic == course.topic))
+								&& !student.ClassSchedule.Any(c => c.Topic != null && c.Topic != "" && c.Topic == course.Topic))
 							{
 								course.Students.Add(student);
 								student.ClassSchedule.Add(course);
@@ -365,7 +372,7 @@ namespace ScheduleLizard
 				}
 			}
 
-			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.topic != null && c.topic != "").GroupBy(c => c.topic).Any(g => g.Count() > 1)).ToArray();
+			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.Topic != null && c.Topic != "").GroupBy(c => c.Topic).Any(g => g.Count() > 1)).ToArray();
 			if (duplicateTopic.Any())
 			{
 				Console.WriteLine("Warning, Kids have duplicate topics");
@@ -382,24 +389,25 @@ namespace ScheduleLizard
 		{
 			// name,location,p1,p2,p3,p4
 			var content = string.Join("\r\n", students.OrderBy(s => s.Name).Select(s => $"{s.Name},{s.Location},{string.Join(",", s.ClassSchedule.OrderBy(c => c.Period).Select(c => c.Name))}"));
-			File.WriteAllText(ByStudent, content);
+			File.WriteAllText(ByStudentGrid, content);
 		}
 
 		static void WritePrintable(Course[] courses, Student[] students)
 		{
 			var content = string.Join("\r\n\r\n", students.OrderBy(s => s.Location).ThenBy(s => s.Name).Select(s => $"{s.Name} ({s.Location})\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name}"))}"));
-			File.WriteAllText(ByStudentPrintable, content);
+			File.WriteAllText(StudentSchedules, content);
 
 			content = string.Join("\r\n" + MSWordPageBreak,
 				courses.GroupBy(c => c.Teacher)
 					.OrderBy(g => g.Key)
-					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Location})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
-			File.WriteAllText(RasterByClassPrintable, content);
+					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Location} w/ {c.Helpers})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
+			File.WriteAllText(ClassRosters, content);
+			MSWord.WriteDocX(ClassRosters.Replace(".txt", ".docx"), content);
 
 			var pad = courses.Max(c => $"p{c.Period} {c.Name}".Length + 2);
-			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).OrderBy(g => g.Key).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Location}"))));
+			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).OrderBy(g => g.Key).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Location} with {c.Helpers}"))));
 			content = $"{courses.SelectMany(c => c.Students).Distinct().Count()} students across {courses.Count()} class periods.\r\n{content}";
-			File.WriteAllText(RasterByTeacherSummary, content);
+			File.WriteAllText(TeacherSchedules, content);
 
 			Console.WriteLine(content);
 		}

@@ -9,13 +9,14 @@ namespace ScheduleLizard
 		public string Name;
 		public string Teacher;
 		public string Location;
-		public int MinCapacity;
+		public int? MinCapacity;
 		public int Capacity;
 		public string Periods; // like "1;2;4"
 		public int Period;
 		public bool CanRetake;
-		public string topic; // to say that two classes might be different levels of the same topic and kids shouldn't be in both of them
-		public int? level;
+		public string Topic; // to say that two classes might be different levels of the same topic and kids shouldn't be in both of them
+		public int? Level;
+		public string Helpers;
 		public List<Student> Students = new List<Student>();
 
 		public IEnumerable<Course> AsPeriods()
@@ -36,7 +37,7 @@ namespace ScheduleLizard
 
 		public override string ToString()
 		{
-			return $"{Name} ({Teacher}, p{Period}, {Students.Count}/{Capacity})";
+			return $"{Name} ({Teacher}, p{Period}, {Students.Count}/{Capacity}, with {Helpers})";
 		}
 	}
 }

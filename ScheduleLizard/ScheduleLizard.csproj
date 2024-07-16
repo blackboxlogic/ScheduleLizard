@@ -20,4 +20,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Output\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
+    <PackageReference Include="MSOffice.Interop" Version="15.0.4815.1" />
+  </ItemGroup>
+
 </Project>
