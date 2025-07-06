@@ -8,7 +8,7 @@ using System.Text;
 namespace ScheduleLizard
 {
 	// TODO: Read/Write to google drive? A database? A static website? PDF?
-
+	// TODO: Format columns to roster and student schedules output.
 	class Program
 	{
 		const string StudentListFile = @"Input\StudentList.csv";
@@ -30,6 +30,7 @@ namespace ScheduleLizard
 		const bool PackTightly = false; // vs load balance
 		const bool PrioritizeNewStudents = true;
 		const int DefaultPreference = 50;
+		const int NumberOfPeriods = 3;
 
 		static void Main(string[] args)
 		{
@@ -124,7 +125,7 @@ namespace ScheduleLizard
 					Location = record[1]
 				};
 
-				for (int i = 1; i < 5; i++) // Assumes 4 period day
+				for (int i = 1; i <= NumberOfPeriods; i++)
 				{
 					if (record[1 + i] == "")
 					{
@@ -422,12 +423,12 @@ namespace ScheduleLizard
 
 			foreach (var student in students
 				// Add some extra nameless surveys
-				.Concat(Enumerable.Repeat(new Student() { Name = "_______________________________", Location = "___________" }, (int)(students.Length * .07)))
+				.Concat(Enumerable.Repeat(new Student() { Name = "Name:__________________________", Location = "___________" }, (int)(students.Length * .07)))
 				.OrderBy(s => s.Location)
 				.ThenBy(s => s.Name))
 			{
 				content.AppendLine($"{student.Name} ({student.Location} family)");
-				content.AppendLine($"Write 1 on your favorite class, 2 on your second favorite... up to {Math.Min(9, distinctCourses.Length)}. Leave the rest blank.");
+				content.AppendLine($"Write 1 on your favorite class, 2 on your second favorite... up to {Math.Min(9, distinctCourses.Length)}.");
 				content.AppendLine();
 
 				foreach (var course in distinctCourses)
