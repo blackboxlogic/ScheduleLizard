@@ -1,9 +1,7 @@
 Class Name,Min,Capacity,Periods,Teacher,Room,CanRetake,Topic,Level,Helpers
-Programming,,12,1;2;3,Alex,Computer Lab,TRUE,,,Rex
-Amusement Park Engineering,,12,1;2;3,Mr. Beckwith,Lab,TRUE,,,
-Telescope Talk,,12,1;2;3,Mr. Berz,B-105,TRUE,,,Cecilia
-Introductory Chemistry,,12,1;2,Dr. J,B-210,TRUE,,,Valerie
-Calculus in a Week,,12,1;2;3,Rob,B-107,TRUE,,,
-Density and Cells,,12,1;2;3,Miss Jo,B-104,TRUE,,,?
-Genetics & Microbiology,,12,1;2;3,Morgan,B-106,TRUE,,,
-Sensory Science,,12,1;2;3,Dianne,B-110,TRUE,,,
+Digital Mapping,,12,1;2;3,Alex,Computer Lab,TRUE,,,
+Earth Wind and Fire,,12,1;2;3,Mr. Beckwith,B-108,TRUE,,,
+Saving the Dark,,12,1;2;3,Mr. Berz,B-105,TRUE,,,
+Advanced Chemistry,,12,1;2;3,Dr. J,B-210,TRUE,,,
+Earth Photography,,12,1;2;3,Miss Jo,B-104,TRUE,,,
+Renewable Energy,,12,1;2;3,Morgan,B-106,TRUE,,,

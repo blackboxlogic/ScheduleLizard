@@ -7,6 +7,14 @@ using System.Text;
 
 namespace ScheduleLizard
 {
+	// Update StudentList
+	// Update CoursDefinitions
+	// Print surveys (1), convert to pdf, print (get pencils)
+	// Students fill out surveys
+	// Update StudentPreferences
+	// calculate schedules (2), convert to pdf, print signs, class roster, student schedules (cut up), give to family mentors
+	// Each teacher gets a class sign and class raster
+
 	// TODO: Read/Write to google drive? A database? A static website? PDF?
 	// TODO: Format columns to roster and student schedules output.
 	class Program
@@ -31,6 +39,7 @@ namespace ScheduleLizard
 		const bool PrioritizeNewStudents = true;
 		const int DefaultPreference = 50;
 		const int NumberOfPeriods = 3;
+		const bool TwoSurveyPerPage = true;
 
 		static void Main(string[] args)
 		{
@@ -39,8 +48,9 @@ namespace ScheduleLizard
 				while(true)
 				{
 					Console.WriteLine("1) Generate Survey\n2) calculate/print Schedule\n3) re-print schedules\n4) exit");
-
 					var key = Console.ReadKey().KeyChar;
+					Console.WriteLine();
+
 					if (key == '1')
 					{
 						var courses = InputCourses();
@@ -360,7 +370,7 @@ namespace ScheduleLizard
 
 			foreach (var q in qualityControl.Where(q => q.Value != 0).OrderBy(q => q.Key))
 			{
-				Console.WriteLine($"{q.Key} choice matches: {q.Value}/{students.Count()}");
+				Console.WriteLine($"{q.Key+ 1} choice matches: {q.Value}/{students.Count()}");
 			}
 
 			foreach (var student in students.OrderBy(s => s.Priority))
@@ -396,6 +406,8 @@ namespace ScheduleLizard
 		static void WritePrintable(Course[] courses, Student[] students)
 		{
 			var content = string.Join("\r\n\r\n", students.OrderBy(s => s.Location).ThenBy(s => s.Name).Select(s => $"{s.Name} ({s.Location})\r\n{new string('-', s.Name.Length)}\r\n{string.Join("\r\n", s.ClassSchedule.OrderBy(c => c.Period).Select((s, i) => $"{s.Period}: {s.Name}"))}"));
+			// TODO: change, the margins, make 2-column, save as PDF.
+			//MSWord.WritePDF(ClassRosters.Replace(".txt", ".pdf"), content, p => 1, (float).9);
 			File.WriteAllText(StudentSchedules, content);
 
 			content = string.Join("\r\n" + MSWordPageBreak,
@@ -403,10 +415,10 @@ namespace ScheduleLizard
 					.OrderBy(g => g.Key)
 					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Location} w/ {c.Helpers})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
 			File.WriteAllText(ClassRosters, content);
-			MSWord.WriteDocX(ClassRosters.Replace(".txt", ".docx"), content);
+			//MSWord.WriteDocX(ClassRosters.Replace(".txt", ".docx"), content);
 
 			var pad = courses.Max(c => $"p{c.Period} {c.Name}".Length + 2);
-			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).OrderBy(g => g.Key).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Location} with {c.Helpers}"))));
+			content = string.Join("\r\n", courses.GroupBy(c => c.Teacher).OrderBy(g => g.Key).Select(t => $"### {t.Key}\r\n" + string.Join("\r\n", t.OrderBy(c => c.Period).Select(c => $"p{c.Period} {c.Name} {new string(' ', Math.Max(pad - $"p{c.Period} {c.Name} ".Length, 1))} Size: {c.Students.Count}/{c.Capacity} in {c.Location}"))));
 			content = $"{courses.SelectMany(c => c.Students).Distinct().Count()} students across {courses.Count()} class periods.\r\n{content}";
 			File.WriteAllText(TeacherSchedules, content);
 
@@ -420,6 +432,8 @@ namespace ScheduleLizard
 			var distinctCourses = courses.GroupBy(c => c.Name).Select(g => g.First()).ToArray();
 
 			StringBuilder content = new StringBuilder();
+
+			int i = 0;
 
 			foreach (var student in students
 				// Add some extra nameless surveys
@@ -437,7 +451,18 @@ namespace ScheduleLizard
 					content.AppendLine();
 				}
 
-				content.Append(MSWordPageBreak);
+				if(i % 2 == 1 || !TwoSurveyPerPage)
+				{
+					content.Append(MSWordPageBreak);
+				}
+				else
+				{
+					for (int j = 0; j < 14; j++) {
+						content.AppendLine();
+					}
+				}
+
+				i++;
 			}
 
 			File.WriteAllText(SurveyFilePath, content.ToString().TrimEnd(MSWordPageBreak));
