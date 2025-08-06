@@ -9,14 +9,20 @@ namespace ScheduleLizard
 {
 	// Update StudentList
 	// Update CoursDefinitions
-	// Print surveys (1), convert to pdf, print (get pencils)
+	// Print surveys (1), convert to pdf, print, group by family and hand out (get pencils)
 	// Students fill out surveys
-	// Update StudentPreferences
-	// calculate schedules (2), convert to pdf, print signs, class roster, student schedules (cut up), give to family mentors
+	// Paste student preferences template into google sheets, update sheet with survey results
+	// Maybe: Update OldClassesByStudent.csv
+	// calculate schedules (2)
+	// class rosters, open with msWord, print 2 copies
+	// convert to pdf, print signs
+	// student schedules, open with msWord, expand margins, make 2-column, print, cut up, give to students
 	// Each teacher gets a class sign and class raster
 
 	// TODO: Read/Write to google drive? A database? A static website? PDF?
 	// TODO: Format columns to roster and student schedules output.
+	// TODO: when colating (?) change orders for paper cutter
+	// TODO: a way to boost a particular class's popularity without limiting the capacity of the others
 	class Program
 	{
 		const string StudentListFile = @"Input\StudentList.csv";
@@ -179,8 +185,10 @@ namespace ScheduleLizard
 			if (File.Exists(ByStudentOLD))
 			{
 				pastClasses = File.ReadAllLines(ByStudentOLD)
+					.Where(l => !l.StartsWith("//")) // Skip comment lines
 					.Select(l => l.Split(","))
-					.ToDictionary(l => l[0], l => l.Skip(1).ToArray());
+					.GroupBy(l => l[0])
+					.ToDictionary(g => g.Key, g => g.SelectMany(l => l.Skip(2)).ToArray());
 			}
 			else
 			{
@@ -340,7 +348,7 @@ namespace ScheduleLizard
 
 					if (student.ClassSchedule.Count < periods)
 					{
-						foreach (var course in coursesOrdered)
+						foreach (var course in coursesOrdered) // intentionally Enumerable for re-ordering.
 						{
 							if (course.Name == prefered
 								// class isn't full
@@ -379,20 +387,26 @@ namespace ScheduleLizard
 
 				if (student.ClassSchedule.Count < periods)
 				{
-					Console.WriteLine($"Student {student.Name} only has {student.ClassSchedule.Count}/{periods} classes");
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.WriteLine($"Student {student.Name} only has {student.ClassSchedule.Count}/{periods} classes: {string.Join(", ", student.ClassSchedule.Select(c => c.Period + c.Name))}");
+					Console.ForegroundColor = ConsoleColor.White;
 				}
 			}
 
 			var duplicateTopic = students.Where(s => s.ClassSchedule.Where(c => c.Topic != null && c.Topic != "").GroupBy(c => c.Topic).Any(g => g.Count() > 1)).ToArray();
 			if (duplicateTopic.Any())
 			{
+				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine("Warning, Kids have duplicate topics");
+				Console.ForegroundColor = ConsoleColor.White;
 			}
 
 			var smallClasses = courses.Where(c => c.Students.Count < c.MinCapacity).ToArray();
 			foreach(var smallClass in smallClasses)
 			{
+				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine($"Warning, {smallClass.Name} has fewer than {smallClass.MinCapacity} students.");
+				Console.ForegroundColor = ConsoleColor.White;
 			}
 		}
 
@@ -413,7 +427,7 @@ namespace ScheduleLizard
 			content = string.Join("\r\n" + MSWordPageBreak,
 				courses.GroupBy(c => c.Teacher)
 					.OrderBy(g => g.Key)
-					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Location} w/ {c.Helpers})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
+					.Select(t => string.Join("\r\n\r\n", t.OrderBy(c => c.Period).Select(c => $"### p{c.Period} {c.Name} ({c.Teacher} @ {c.Location})\r\n{string.Join("\r\n", c.Students.OrderBy(s => s.Name).Select((s, i) => $"{i+1}. {s.Name}"))}"))));
 			File.WriteAllText(ClassRosters, content);
 			//MSWord.WriteDocX(ClassRosters.Replace(".txt", ".docx"), content);
 
